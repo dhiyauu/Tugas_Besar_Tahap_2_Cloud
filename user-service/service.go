@@ -651,7 +651,7 @@ func Register(
 	role string,
 ) (User, error) {
 
-	result, err := db.Exec(`
+	result, err := DB.Exec(`
 		INSERT INTO users(name,email,password,role)
 		VALUES(?,?,?,?)
 	`,
@@ -682,7 +682,7 @@ func Login(email string, password string) (User, error) {
 
 	var u User
 
-	err := db.QueryRow(`
+	err := DB.QueryRow(`
 		SELECT user_id,name,email,password,role
 		FROM users
 		WHERE email = ?
