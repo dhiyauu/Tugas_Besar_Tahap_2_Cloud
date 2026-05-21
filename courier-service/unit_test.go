@@ -8,13 +8,13 @@ func TestStartDeliverySuccess(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		Resi:         req.Resi,
-		CourierID:    req.CourierID,
-		AssignedZone: req.AssignedZone,
-		Status:       "pending",
-		CreatedAt:    time.Now(),
+		CourierID:      1,
+		Resi:           "RESI001",
+		NamaPenerima:   "Budi",
+		AlamatPenerima: "Jakarta",
+		Status:         "pending",
 	}
-
+	
 	err := service.StartDelivery(delivery)
 	if err != nil {
 		t.Errorf("StartDelivery failed: %v", err)
