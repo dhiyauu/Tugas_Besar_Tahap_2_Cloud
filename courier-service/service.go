@@ -69,22 +69,21 @@ func (s *CourierService) GetCourierDeliveries(
 	return result
 }
 
-func (s *CourierService) ValidateDelivery(d *Delivery) error {
-
-	if d == nil {
+func (s *CourierService) ValidateDelivery(delivery *Delivery) error {
+	if delivery == nil {
 		return errors.New("delivery nil")
 	}
 
-	if d.Resi == "" {
+	if delivery.Resi == "" {
 		return errors.New("resi kosong")
 	}
 
-	if d.CourierID <= 0 {
-		return errors.New("courier invalid")
+	if delivery.CourierID <= 0 {
+		return errors.New("courier_id tidak valid")
 	}
 
-	if d.NamaPenerima == "" {
-		return errors.New("receiver kosong")
+	if delivery.AlamatPenerima == "" {
+		return errors.New("alamat penerima kosong")
 	}
 
 	return nil
