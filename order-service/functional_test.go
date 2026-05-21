@@ -174,7 +174,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "host.docker.internal"
+	dbHost = "muysql"
 	dbPort = "3306"
 	dbName = "tubesdb"
 )
@@ -201,22 +201,12 @@ func TestCreateOrder_Functional(t *testing.T) {
 	t.Log("DATABASE CONNECTED")
 
 	// ==================================
-	// 2. START ORDER SERVICE LOKAL
-	// ==================================
-	go func() {
-		http.HandleFunc("/order", createOrderHandler)
-		http.ListenAndServe(":8083", nil)
-	}()
-
-	time.Sleep(2 * time.Second)
-
-	// ==================================
-	// 3. REGISTER USER
+	// REGISTER USER
 	// ==================================
 	email := fmt.Sprintf("func%d@mail.com", time.Now().UnixNano())
 
 	respReg, err := http.Post(
-		"http://host.docker.internal:8081/register",
+		"http://user-service:8081/register",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Name":"Func",
@@ -239,7 +229,7 @@ func TestCreateOrder_Functional(t *testing.T) {
 	// 4. LOGIN
 	// ==================================
 	respLogin, err := http.Post(
-		"http://host.docker.internal:8081/login",
+		"http://user-service:8081/login",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Email":"%s",
@@ -271,7 +261,7 @@ func TestCreateOrder_Functional(t *testing.T) {
 
 	req, _ := http.NewRequest(
 		"POST",
-		"http://host.docker.internal:8083/order",
+		"http://order-service:8083/order",
 		bytes.NewBuffer(body),
 	)
 
