@@ -1,60 +1,97 @@
 package main
 
-// import (
-// 	"errors"
-// 	"fmt"
-// 	"time"
-// )
+import (
+	"errors"
+	"time"
+)
 
 type SortingService struct {
-	// Bisa inject database atau repository di sini nanti
 }
 
 func NewSortingService() *SortingService {
 	return &SortingService{}
 }
 
-// StartSorting - Mulai proses sorting package
-// TODO: Implementasi di Tahap 3
+// StartSorting
 func (s *SortingService) StartSorting(pkg *Package) error {
-	// TODO: Validasi package tidak nil
-	// TODO: Validasi resi tidak kosong
-	// TODO: Validasi status = pending
-	// TODO: Validasi warehouse_zone tidak kosong
-	// TODO: Update status ke "sorting"
-	// TODO: Simpan ke database
+
+	if pkg == nil {
+		return errors.New("package nil")
+	}
+
+	if pkg.Resi == "" {
+		return errors.New("resi kosong")
+	}
+
+	if pkg.WarehouseZone == "" {
+		return errors.New("warehouse zone kosong")
+	}
+
+	if pkg.Status != "pending" {
+		return errors.New("status tidak pending")
+	}
+
+	pkg.Status = "sorting"
+
 	return nil
 }
 
-// CompleteSorting - Selesaikan proses sorting
-// TODO: Implementasi di Tahap 3
+// CompleteSorting
 func (s *SortingService) CompleteSorting(pkg *Package) error {
-	// TODO: Validasi package tidak nil
-	// TODO: Validasi status = sorting
-	// TODO: Update status ke "ready"
-	// TODO: Set SortedAt timestamp
-	// TODO: Simpan ke database
-	// TODO: Set SortedAt timestamp
-	// TODO: Update status ke "ready"
-	// TODO: Simpan ke database
+
+	if pkg == nil {
+		return errors.New("package nil")
+	}
+
+	if pkg.Status != "sorting" {
+		return errors.New("status tidak sorting")
+	}
+
+	now := time.Now()
+
+	pkg.Status = "ready"
+	pkg.SortedAt = &now
+
 	return nil
 }
 
-// GetPendingPackages - Ambil semua package dengan status pending
-// TODO: Implementasi di Tahap 3
+// GetPendingPackages
 func (s *SortingService) GetPendingPackages(packages []Package) []Package {
-	// TODO: Query dari database dengan status = pending
-	// TODO: Return hasil packages
-	return []Package{}
+
+	var result []Package
+
+	for _, p := range packages {
+
+		if p.Status == "pending" {
+			result = append(result, p)
+		}
+	}
+
+	return result
 }
 
-// ValidatePackage - Validasi package data
-// TODO: Implementasi di Tahap 3
+// ValidatePackage
 func (s *SortingService) ValidatePackage(pkg *Package) error {
-	// TODO: Validasi package tidak nil
-	// TODO: Validasi resi tidak kosong
-	// TODO: Validasi user_id > 0
-	// TODO: Validasi berat > 0
-	// TODO: Validasi warehouse_zone tidak kosong
+
+	if pkg == nil {
+		return errors.New("package nil")
+	}
+
+	if pkg.Resi == "" {
+		return errors.New("resi kosong")
+	}
+
+	if pkg.UserID <= 0 {
+		return errors.New("user id invalid")
+	}
+
+	if pkg.Berat <= 0 {
+		return errors.New("berat invalid")
+	}
+
+	if pkg.WarehouseZone == "" {
+		return errors.New("warehouse zone kosong")
+	}
+
 	return nil
 }
