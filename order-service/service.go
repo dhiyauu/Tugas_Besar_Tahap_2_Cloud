@@ -488,7 +488,7 @@ import (
 var orders []Order
 var nextID = 1
 
-var UserServiceURL = "http://user-service:8081"
+var UserServiceURL = "http://host.docker.internal:8081"
 
 type Validator interface {
 	CheckUser(userID int, token string) bool
