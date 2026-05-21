@@ -233,7 +233,8 @@ pipeline {
 
        stage('5. Functional Tests') {
             steps {
-                sh 'docker-compose up -d'
+        
+                sh 'docker-compose up -d --build'
         
                 sleep time: 20, unit: 'SECONDS'
         
@@ -253,17 +254,17 @@ pipeline {
                     dir('tracking-service') {
                         sh 'go test -tags=functional -v -run Functional ./...'
                     }
-
+        
                     echo 'Running Gudang Functional Tests...'
                     dir('gudang-service') {
                         sh 'go test -tags=functional -v -run Functional ./...'
                     }
-
+        
                     echo 'Running Courier Functional Tests...'
                     dir('courier-service') {
                         sh 'go test -tags=functional -v -run Functional ./...'
                     }
-
+        
                     echo 'Running Report Functional Tests...'
                     dir('report-service') {
                         sh 'go test -tags=functional -v -run Functional ./...'
