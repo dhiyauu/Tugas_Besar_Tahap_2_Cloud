@@ -1,4 +1,3 @@
-```go
 package main
 
 import (
@@ -99,4 +98,3 @@ func (s *CourierService) ValidateDelivery(delivery *Delivery) error {
 
 	return nil
 }
-```
