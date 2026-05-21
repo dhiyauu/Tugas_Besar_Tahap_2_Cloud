@@ -141,7 +141,6 @@ pipeline {
 
         stage('2. Unit Tests') {
             steps {
-        
                 echo 'Running User Service Unit Tests...'
                 dir('user-service') {
                     sh 'go test -v ./... -skip Functional'
@@ -156,12 +155,26 @@ pipeline {
                 dir('tracking-service') {
                     sh 'go test -v ./... -skip Functional'
                 }
+
+                echo 'Running Gudang Service Unit Tests...'
+                dir('gudang-service') {
+                    sh 'go test -v ./... -skip Functional'
+                }
+
+                echo 'Running Courier Service Unit Tests...'
+                dir('courier-service') {
+                    sh 'go test -v ./... -skip Functional'
+                }
+
+                echo 'Running Report Service Unit Tests...'
+                dir('report-service') {
+                    sh 'go test -v ./... -skip Functional'
+                }
             }
         }
 
         stage('3. Lint / Vet') {
             steps {
-
                 dir('user-service') {
                     sh 'go vet ./...'
                 }
@@ -173,12 +186,23 @@ pipeline {
                 dir('tracking-service') {
                     sh 'go vet ./...'
                 }
+
+                dir('gudang-service') {
+                    sh 'go vet ./...'
+                }
+
+                dir('courier-service') {
+                    sh 'go vet ./...'
+                }
+
+                dir('report-service') {
+                    sh 'go vet ./...'
+                }
             }
         }
 
         stage('4. Build Images') {
             steps {
-
                 echo 'Building User Service Image...'
                 sh 'docker build -t user-service:latest ./user-service'
 
@@ -188,16 +212,27 @@ pipeline {
                 echo 'Building Tracking Service Image...'
                 sh 'docker build -t tracking-service:latest ./tracking-service'
 
+                echo 'Building Gudang Service Image...'
+                sh 'docker build -t gudang-service:latest ./gudang-service'
+
+                echo 'Building Courier Service Image...'
+                sh 'docker build -t courier-service:latest ./courier-service'
+
+                echo 'Building Report Service Image...'
+                sh 'docker build -t report-service:latest ./report-service'
+
                 // tagging
                 sh "docker tag user-service:latest ${DOCKER_REGISTRY}/user-service:${IMAGE_TAG}"
                 sh "docker tag order-service:latest ${DOCKER_REGISTRY}/order-service:${IMAGE_TAG}"
                 sh "docker tag tracking-service:latest ${DOCKER_REGISTRY}/tracking-service:${IMAGE_TAG}"
+                sh "docker tag gudang-service:latest ${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
+                sh "docker tag courier-service:latest ${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
+                sh "docker tag report-service:latest ${DOCKER_REGISTRY}/report-service:${IMAGE_TAG}"
             }
         }
 
        stage('5. Functional Tests') {
             steps {
-        
                 sh 'docker-compose up -d'
         
                 sleep time: 20, unit: 'SECONDS'
@@ -205,20 +240,32 @@ pipeline {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
         
                     echo 'Running User Functional Tests...'
-        
                     dir('user-service') {
                         sh 'go test -tags=functional -v -run Functional ./...'
                     }
         
                     echo 'Running Order Functional Tests...'
-        
                     dir('order-service') {
                         sh 'go test -tags=functional -v -run Functional ./...'
                     }
         
                     echo 'Running Tracking Functional Tests...'
-        
                     dir('tracking-service') {
+                        sh 'go test -tags=functional -v -run Functional ./...'
+                    }
+
+                    echo 'Running Gudang Functional Tests...'
+                    dir('gudang-service') {
+                        sh 'go test -tags=functional -v -run Functional ./...'
+                    }
+
+                    echo 'Running Courier Functional Tests...'
+                    dir('courier-service') {
+                        sh 'go test -tags=functional -v -run Functional ./...'
+                    }
+
+                    echo 'Running Report Functional Tests...'
+                    dir('report-service') {
                         sh 'go test -tags=functional -v -run Functional ./...'
                     }
                 }
@@ -233,41 +280,51 @@ pipeline {
 
         stage('6. Push Images') {
             steps {
-
                 sh "docker push ${DOCKER_REGISTRY}/user-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/order-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/tracking-service:${IMAGE_TAG}"
+                sh "docker push ${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
+                sh "docker push ${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
+                sh "docker push ${DOCKER_REGISTRY}/report-service:${IMAGE_TAG}"
             }
         }
 
         stage('7. Deploy Kubernetes') {
             steps {
-
                 sh 'kubectl apply -f k8s/user-deployment.yaml'
                 sh 'kubectl apply -f k8s/order-deployment.yaml'
                 sh 'kubectl apply -f k8s/tracking-deployment.yaml'
+                sh 'kubectl apply -f k8s/gudang-deployment.yaml'
+                sh 'kubectl apply -f k8s/courier-deployment.yaml'
+                sh 'kubectl apply -f k8s/report-deployment.yaml'
 
                 sh 'kubectl apply -f k8s/user-service.yaml'
                 sh 'kubectl apply -f k8s/order-service.yaml'
                 sh 'kubectl apply -f k8s/tracking-service.yaml'
+                sh 'kubectl apply -f k8s/gudang-service.yaml'
+                sh 'kubectl apply -f k8s/courier-service.yaml'
+                sh 'kubectl apply -f k8s/report-service.yaml'
 
                 sh "kubectl set image deployment/user-service user-service=${DOCKER_REGISTRY}/user-service:${IMAGE_TAG}"
-
                 sh "kubectl set image deployment/order-service order-service=${DOCKER_REGISTRY}/order-service:${IMAGE_TAG}"
-
                 sh "kubectl set image deployment/tracking-service tracking-service=${DOCKER_REGISTRY}/tracking-service:${IMAGE_TAG}"
+                sh "kubectl set image deployment/gudang-service gudang-service=${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
+                sh "kubectl set image deployment/courier-service courier-service=${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
+                sh "kubectl set image deployment/report-service report-service=${DOCKER_REGISTRY}/report-service:${IMAGE_TAG}"
             }
         }
 
         stage('8. Verify') {
             steps {
-
                 sh 'kubectl get pods'
                 sh 'kubectl get svc'
 
                 sh 'kubectl rollout status deployment/user-service --timeout=180s'
                 sh 'kubectl rollout status deployment/order-service --timeout=180s'
                 sh 'kubectl rollout status deployment/tracking-service --timeout=180s'
+                sh 'kubectl rollout status deployment/gudang-service --timeout=180s'
+                sh 'kubectl rollout status deployment/courier-service --timeout=180s'
+                sh 'kubectl rollout status deployment/report-service --timeout=180s'
             }
         }
     }
