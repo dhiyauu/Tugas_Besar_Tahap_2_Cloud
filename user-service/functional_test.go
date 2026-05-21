@@ -20,7 +20,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "mysql"
+	dbHost = "host.docker.internal"
 	dbPort = "3306"
 	dbName = "tubesdb"
 )
@@ -47,27 +47,7 @@ func TestUserFlow_Functional(t *testing.T) {
 	t.Log("DATABASE CONNECTED")
 
 	// ==================================
-	// 2. CONNECT APP DATABASE
-	// ==================================
-	ConnectDB()
-
-	// ==================================
-	// 3. START USER SERVICE
-	// ==================================
-	go func() {
-
-		http.HandleFunc("/register", registerHandler)
-		http.HandleFunc("/login", loginHandler)
-		http.HandleFunc("/profile", profileHandler)
-
-		http.ListenAndServe(":8081", nil)
-
-	}()
-
-	time.Sleep(2 * time.Second)
-
-	// ==================================
-	// 4. REGISTER
+	// REGISTER
 	// ==================================
 	email := fmt.Sprintf(
 		"func%d@mail.com",
@@ -75,7 +55,7 @@ func TestUserFlow_Functional(t *testing.T) {
 	)
 
 	respReg, err := http.Post(
-		"http://user-service:8081/register",
+		"http://host.docker.internal:8081/register",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Name":"Functional",
@@ -105,7 +85,7 @@ func TestUserFlow_Functional(t *testing.T) {
 	// 5. LOGIN
 	// ==================================
 	respLogin, err := http.Post(
-		"http://user-service:8081/login",
+		"http://host.docker.internal:8081/login",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Email":"%s",
@@ -135,7 +115,7 @@ func TestUserFlow_Functional(t *testing.T) {
 	reqProfile, _ := http.NewRequest(
 		"GET",
 		fmt.Sprintf(
-			"http://user-service:8081/profile?id=%d",
+			"http://host.docker.internal:8081/profile?id=%d",
 			userID,
 		),
 		nil,
