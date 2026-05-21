@@ -1,13 +1,11 @@
 package main
 
-// import (
-// 	"errors"
-// 	"fmt"
-// 	"time"
-// )
+import (
+	"errors"
+	"time"
+)
 
 type CourierService struct {
-	// Bisa inject database atau repository di sini nanti
 }
 
 func NewCourierService() *CourierService {
@@ -15,43 +13,90 @@ func NewCourierService() *CourierService {
 }
 
 // StartDelivery - Mulai proses delivery
-// TODO: Implementasi di Tahap 3
 func (s *CourierService) StartDelivery(delivery *Delivery) error {
-	// TODO: Validasi delivery tidak nil
-	// TODO: Validasi resi tidak kosong
-	// TODO: Validasi status = pending
-	// TODO: Validasi courier_id > 0
-	// TODO: Update status ke "in_delivery"
-	// TODO: Simpan ke database
+
+	if delivery == nil {
+		return errors.New("delivery nil")
+	}
+
+	if delivery.Resi == "" {
+		return errors.New("resi kosong")
+	}
+
+	if delivery.CourierID <= 0 {
+		return errors.New("courier invalid")
+	}
+
+	if delivery.Status != "pending" {
+		return errors.New("status invalid")
+	}
+
+	delivery.Status = "in_delivery"
+
 	return nil
 }
 
 // CompleteDelivery - Selesaikan proses delivery
-// TODO: Implementasi di Tahap 3
 func (s *CourierService) CompleteDelivery(delivery *Delivery) error {
-	// TODO: Validasi delivery tidak nil
-	// TODO: Validasi status = in_delivery
-	// TODO: Update status ke "delivered"
-	// TODO: Set DeliveredAt timestamp
-	// TODO: Simpan ke database
+
+	if delivery == nil {
+		return errors.New("delivery nil")
+	}
+
+	if delivery.Status != "in_delivery" {
+		return errors.New("delivery belum berjalan")
+	}
+
+	now := time.Now()
+
+	delivery.Status = "delivered"
+	delivery.DeliveredAt = &now
+
 	return nil
 }
 
 // GetCourierDeliveries - Ambil semua delivery untuk courier tertentu
-// TODO: Implementasi di Tahap 3
-func (s *CourierService) GetCourierDeliveries(deliveries []Delivery, courierID int) []Delivery {
-	// TODO: Query dari database berdasarkan courier_id
-	// TODO: Return hasil deliveries
-	return []Delivery{}
+func (s *CourierService) GetCourierDeliveries(
+	deliveries []Delivery,
+	courierID int,
+) []Delivery {
+
+	var result []Delivery
+
+	for _, d := range deliveries {
+
+		if d.CourierID == courierID {
+			result = append(result, d)
+		}
+	}
+
+	return result
 }
 
 // ValidateDelivery - Validasi delivery data
-// TODO: Implementasi di Tahap 3
-func (s *CourierService) ValidateDelivery(delivery *Delivery) error {
-	// TODO: Validasi delivery tidak nil
-	// TODO: Validasi resi tidak kosong
-	// TODO: Validasi courier_id > 0
-	// TODO: Validasi nama_penerima tidak kosong
-	// TODO: Validasi alamat_penerima tidak kosong
+func (s *CourierService) ValidateDelivery(
+	delivery *Delivery,
+) error {
+
+	if delivery == nil {
+		return errors.New("delivery nil")
+	}
+
+	if delivery.Resi == "" {
+		return errors.New("resi kosong")
+	}
+
+	if delivery.CourierID <= 0 {
+		return errors.New("courier invalid")
+	}
+
+	if delivery.NamaPenerima == "" {
+		return errors.New("nama penerima kosong")
+	}
+
+	if delivery.AlamatPenerima == "" {
+		return errors.New("alamat penerima kosong")
+	}
+
 	return nil
 }
