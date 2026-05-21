@@ -315,22 +315,6 @@ package main
 
 import "errors"
 
-var users []User
-var nextID = 1
-
-func init() {
-	seed := User{
-		UserID:   nextID,
-		Name:     "seed",
-		Email:    "seed@mail.com",
-		Password: "hashed",
-		Role:     "customer",
-	}
-
-	users = append(users, seed)
-	nextID++
-}
-
 func Register(
 	name string,
 	email string,
@@ -338,45 +322,82 @@ func Register(
 	role string,
 ) (User, error) {
 
-	user := User{
-		UserID:   nextID,
-		Name:     name,
-		Email:    email,
-		Password: password,
-		Role:     role,
+	result, err := db.Exec(`
+		INSERT INTO users(name,email,password,role)
+		VALUES(?,?,?,?)
+	`,
+		name,
+		email,
+		password,
+		role,
+	)
+
+	if err != nil {
+		return User{}, err
 	}
 
-	nextID++
+	id, _ := result.LastInsertId()
 
-	users = append(users, user)
+	user := User{
+		UserID:  int(id),
+		Name:    name,
+		Email:   email,
+		Password: password,
+		Role:    role,
+	}
 
 	return user, nil
 }
 
 func Login(email string, password string) (User, error) {
 
-	for _, u := range users {
+	var u User
 
-		if u.Email == email &&
-			u.Password == password {
+	err := db.QueryRow(`
+		SELECT user_id,name,email,password,role
+		FROM users
+		WHERE email = ?
+	`, email).Scan(
+		&u.UserID,
+		&u.Name,
+		&u.Email,
+		&u.Password,
+		&u.Role,
+	)
 
-			return u, nil
-		}
+	if err != nil {
+		return User{}, errors.New("login gagal")
 	}
 
-	return User{}, errors.New("login gagal")
+	if u.Password != password {
+		return User{}, errors.New("password salah")
+	}
+
+	return u, nil
 }
 
 func GetProfile(id int) *User {
 
-	for i := range users {
+	var u User
 
-		if users[i].UserID == id {
-			return &users[i]
-		}
+	err := db.QueryRow(`
+		SELECT user_id,name,email,role,alamat,preferensi
+		FROM users
+		WHERE user_id = ?
+	`, id).Scan(
+		&u.UserID,
+		&u.Name,
+		&u.Email,
+		&u.Role,
+		&u.Alamat,
+		&u.Preferensi,
+	)
+
+	if err != nil {
+		return nil
 	}
 
-	return nil
+	return &u
 }
 
 func UpdateProfile(
@@ -385,16 +406,15 @@ func UpdateProfile(
 	preferensi string,
 ) bool {
 
-	for i := range users {
+	_, err := db.Exec(`
+		UPDATE users
+		SET alamat=?, preferensi=?
+		WHERE user_id=?
+	`,
+		alamat,
+		preferensi,
+		userID,
+	)
 
-		if users[i].UserID == userID {
-
-			users[i].Alamat = alamat
-			users[i].Preferensi = preferensi
-
-			return true
-		}
-	}
-
-	return false
+	return err == nil
 }
