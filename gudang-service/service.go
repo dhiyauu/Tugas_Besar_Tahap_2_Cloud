@@ -17,6 +17,18 @@ func (s *SortingService) StartSorting(pkg *Package) error {
 		return errors.New("package nil")
 	}
 
+	if pkg.Resi == "" {
+		return errors.New("resi kosong")
+	}
+
+	if pkg.WarehouseZone == "" {
+		return errors.New("warehouse kosong")
+	}
+
+	if pkg.Status != "pending" {
+		return errors.New("status tidak pending")
+	}
+
 	pkg.Status = "sorting"
 
 	return nil
@@ -26,6 +38,10 @@ func (s *SortingService) CompleteSorting(pkg *Package) error {
 
 	if pkg == nil {
 		return errors.New("package nil")
+	}
+
+	if pkg.Status != "sorting" {
+		return errors.New("status tidak sorting")
 	}
 
 	now := time.Now()
@@ -53,6 +69,22 @@ func (s *SortingService) ValidatePackage(pkg *Package) error {
 
 	if pkg == nil {
 		return errors.New("package nil")
+	}
+
+	if pkg.Resi == "" {
+		return errors.New("resi kosong")
+	}
+
+	if pkg.UserID <= 0 {
+		return errors.New("user invalid")
+	}
+
+	if pkg.Berat <= 0 {
+		return errors.New("berat invalid")
+	}
+
+	if pkg.WarehouseZone == "" {
+		return errors.New("warehouse kosong")
 	}
 
 	return nil
