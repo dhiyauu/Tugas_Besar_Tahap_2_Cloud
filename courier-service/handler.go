@@ -113,6 +113,6 @@ func (h *CourierHandler) Health(w http.ResponseWriter, r *http.Request) {
 
 	// response health check service
 	json.NewEncoder(w).Encode(map[string]string{
-		"status": "", // isi dengan status service
+		"status": "healthy", // isi dengan status service
 	})
 }
