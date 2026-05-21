@@ -195,29 +195,56 @@ pipeline {
             }
         }
 
-        stage('5. Functional Tests') {
+       stage('5. Functional Tests') {
             steps {
-
+        
                 sh 'docker-compose up -d'
-
+        
                 sleep time: 20, unit: 'SECONDS'
-
+        
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-
+        
+                    echo 'Running User Functional Tests...'
+        
                     dir('user-service') {
-                        sh 'go test -v -run Functional ./...'
+                        sh '''
+                        docker run --rm \
+                          --network tubes2_default \
+                          -v $(pwd):/app \
+                          -w /app \
+                          golang:1.25 \
+                          go test -v -run Functional ./...
+                        '''
                     }
-
+        
+                    echo 'Running Order Functional Tests...'
+        
                     dir('order-service') {
-                        sh 'go test -v -run Functional ./...'
+                        sh '''
+                        docker run --rm \
+                          --network tubes2_default \
+                          -v $(pwd):/app \
+                          -w /app \
+                          golang:1.25 \
+                          go test -v -run Functional ./...
+                        '''
                     }
-
+        
+                    echo 'Running Tracking Functional Tests...'
+        
                     dir('tracking-service') {
-                        sh 'go test -v -run Functional ./...'
+                        sh '''
+                        docker run --rm \
+                          --network tubes2_default \
+                          -v $(pwd):/app \
+                          -w /app \
+                          golang:1.25 \
+                          go test -v -run Functional ./...
+                        '''
                     }
                 }
             }
-
+        
             post {
                 always {
                     sh 'docker-compose down'
