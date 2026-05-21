@@ -174,7 +174,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "mysql"
+	dbHost = "host.docker.internal"
 	dbPort = "3306"
 	dbName = "tubesdb"
 )
