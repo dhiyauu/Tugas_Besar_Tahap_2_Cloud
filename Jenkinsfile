@@ -206,36 +206,21 @@ pipeline {
         
                     echo 'Running User Functional Tests...'
         
-                    sh """
-                    docker run --rm \
-                      --network tubes2-pipeline_default \
-                      -v ${WORKSPACE}/user-service:/app \
-                      -w /app \
-                      golang:1.25 \
-                      go test -v -run Functional ./...
-                    """
+                    dir('user-service') {
+                        sh 'go test -v -run Functional ./...'
+                    }
         
                     echo 'Running Order Functional Tests...'
         
-                    sh """
-                    docker run --rm \
-                      --network tubes2-pipeline_default \
-                      -v ${WORKSPACE}/order-service:/app \
-                      -w /app \
-                      golang:1.25 \
-                      go test -v -run Functional ./...
-                    """
+                    dir('order-service') {
+                        sh 'go test -v -run Functional ./...'
+                    }
         
                     echo 'Running Tracking Functional Tests...'
         
-                    sh """
-                    docker run --rm \
-                      --network tubes2-pipeline_default \
-                      -v ${WORKSPACE}/tracking-service:/app \
-                      -w /app \
-                      golang:1.25 \
-                      go test -v -run Functional ./...
-                    """
+                    dir('tracking-service') {
+                        sh 'go test -v -run Functional ./...'
+                    }
                 }
             }
         
