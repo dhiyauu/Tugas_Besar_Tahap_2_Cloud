@@ -7,7 +7,6 @@ import (
 	"time"
 )
 
-// Interface untuk memudahkan mocking di test
 type CourierServiceInterface interface {
 	StartDelivery(delivery *Delivery) error
 	CompleteDelivery(delivery *Delivery) error
@@ -27,11 +26,13 @@ func NewCourierHandler(service CourierServiceInterface) *CourierHandler {
 func (h *CourierHandler) StartDelivery(w http.ResponseWriter, r *http.Request) {
 	var req DeliveryRequest
 
+	// decode request body dari JSON
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
+	// validasi field 
 	if req.Resi == "" || req.CourierID <= 0 || req.AssignedZone == "" {
 		http.Error(w, "resi, courier_id, assigned_zone are required", http.StatusBadRequest)
 		return
@@ -41,17 +42,23 @@ func (h *CourierHandler) StartDelivery(w http.ResponseWriter, r *http.Request) {
 		Resi:         req.Resi,
 		CourierID:    req.CourierID,
 		AssignedZone: req.AssignedZone,
-		Status:       "pending",
-		CreatedAt:    time.Now(),
+
+		// isi status awal delivery
+		Status: "",
+
+		// waktu pembuatan delivery
+		CreatedAt: time.Now(),
 	}
 
-	// panggil service
+	// panggil service StartDelivery
 	if err := h.service.StartDelivery(delivery); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+
+	// kirim response delivery dalam format JSON
 	json.NewEncoder(w).Encode(delivery)
 }
 
@@ -59,34 +66,40 @@ func (h *CourierHandler) StartDelivery(w http.ResponseWriter, r *http.Request) {
 func (h *CourierHandler) GetCourierDeliveries(w http.ResponseWriter, r *http.Request) {
 	idStr := r.URL.Query().Get("courier_id")
 
+	// validasi query parameter courier_id
 	if idStr == "" {
 		http.Error(w, "courier_id is required", http.StatusBadRequest)
 		return
 	}
 
 	courierID, err := strconv.Atoi(idStr)
+
+	// validasi apakah courier_id berupa angka valid
 	if err != nil || courierID <= 0 {
 		http.Error(w, "invalid courier_id", http.StatusBadRequest)
 		return
 	}
 
-	// dummy data (sementara kalau belum DB)
+	// data delivery 
 	all := []Delivery{
 		{
-			Resi:      "RESI001",
-			CourierID: 1,
-			Status:    "delivered",
+			Resi:      "", // isi dengan nomor resi
+			CourierID: 0,  // isi dengan courier_id
+			Status:    "", // isi dengan status delivery
 		},
 		{
-			Resi:      "RESI002",
-			CourierID: 2,
-			Status:    "in_delivery",
+			Resi:      "", // isi dengan nomor resi
+			CourierID: 0,  // isi dengan courier_id
+			Status:    "", // isi dengan status delivery
 		},
 	}
 
+	// ambil data delivery berdasarkan courier_id
 	result := h.service.GetCourierDeliveries(all, courierID)
 
 	w.Header().Set("Content-Type", "application/json")
+
+	// kirim response hasil delivery courier
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"courier_id": courierID,
 		"count":      len(result),
@@ -97,7 +110,9 @@ func (h *CourierHandler) GetCourierDeliveries(w http.ResponseWriter, r *http.Req
 // GET /health
 func (h *CourierHandler) Health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
+	// response health check service
 	json.NewEncoder(w).Encode(map[string]string{
-		"status": "healthy",
+		"status": "", // isi dengan status service
 	})
 }
