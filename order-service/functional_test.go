@@ -174,7 +174,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "muysql"
+	dbHost = "mysql"
 	dbPort = "3306"
 	dbName = "tubesdb"
 )
