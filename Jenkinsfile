@@ -207,19 +207,19 @@ pipeline {
                     echo 'Running User Functional Tests...'
         
                     dir('user-service') {
-                        sh 'go test -v -run Functional ./...'
+                        sh 'go test -tags=functional -v -run Functional ./...'
                     }
         
                     echo 'Running Order Functional Tests...'
         
                     dir('order-service') {
-                        sh 'go test -v -run Functional ./...'
+                        sh 'go test -tags=functional -v -run Functional ./...'
                     }
         
                     echo 'Running Tracking Functional Tests...'
         
                     dir('tracking-service') {
-                        sh 'go test -v -run Functional ./...'
+                        sh 'go test -tags=functional -v -run Functional ./...'
                     }
                 }
             }
