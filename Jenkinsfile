@@ -140,20 +140,20 @@ pipeline {
 
         stage('2. Unit Tests') {
             steps {
-
+        
                 echo 'Running User Service Unit Tests...'
                 dir('user-service') {
-                    sh 'go test -v ./... -skip Functional'
+                    sh 'docker run --rm -v $(pwd):/app -w /app golang:1.24 go test -v ./... -skip Functional'
                 }
-
+        
                 echo 'Running Order Service Unit Tests...'
                 dir('order-service') {
-                    sh 'go test -v ./... -skip Functional'
+                    sh 'docker run --rm -v $(pwd):/app -w /app golang:1.24 go test -v ./... -skip Functional'
                 }
-
+        
                 echo 'Running Tracking Service Unit Tests...'
                 dir('tracking-service') {
-                    sh 'go test -v ./... -skip Functional'
+                    sh 'docker run --rm -v $(pwd):/app -w /app golang:1.24 go test -v ./... -skip Functional'
                 }
             }
         }
