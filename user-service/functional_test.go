@@ -20,7 +20,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "127.0.0.1"
+	dbHost = "mysql"
 	dbPort = "3306"
 	dbName = "tubesdb"
 )
@@ -75,7 +75,7 @@ func TestUserFlow_Functional(t *testing.T) {
 	)
 
 	respReg, err := http.Post(
-		"http://127.0.0.1:8081/register",
+		"http://user-service:8081/register",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Name":"Functional",
@@ -105,7 +105,7 @@ func TestUserFlow_Functional(t *testing.T) {
 	// 5. LOGIN
 	// ==================================
 	respLogin, err := http.Post(
-		"http://127.0.0.1:8081/login",
+		"http://user-service:8081/login",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Email":"%s",
@@ -135,7 +135,7 @@ func TestUserFlow_Functional(t *testing.T) {
 	reqProfile, _ := http.NewRequest(
 		"GET",
 		fmt.Sprintf(
-			"http://127.0.0.1:8081/profile?id=%d",
+			"http://user-service:8081/profile?id=%d",
 			userID,
 		),
 		nil,
