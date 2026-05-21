@@ -632,6 +632,7 @@ var users []User
 var nextID = 1
 
 func init() {
+
 	seed := User{
 		UserID:   nextID,
 		Name:     "seed",
@@ -651,58 +652,33 @@ func Register(
 	role string,
 ) (User, error) {
 
-	result, err := DB.Exec(`
-		INSERT INTO users(name,email,password,role)
-		VALUES(?,?,?,?)
-	`,
-		name,
-		email,
-		password,
-		role,
-	)
-
-	if err != nil {
-		return User{}, err
-	}
-
-	id, _ := result.LastInsertId()
-
 	user := User{
-		UserID:  int(id),
-		Name:    name,
-		Email:   email,
+		UserID:   nextID,
+		Name:     name,
+		Email:    email,
 		Password: password,
-		Role:    role,
+		Role:     role,
 	}
+
+	nextID++
+
+	users = append(users, user)
 
 	return user, nil
 }
 
 func Login(email string, password string) (User, error) {
 
-	var u User
+	for _, u := range users {
 
-	err := DB.QueryRow(`
-		SELECT user_id,name,email,password,role
-		FROM users
-		WHERE email = ?
-	`, email).Scan(
-		&u.UserID,
-		&u.Name,
-		&u.Email,
-		&u.Password,
-		&u.Role,
-	)
+		if u.Email == email &&
+			u.Password == password {
 
-	if err != nil {
-		return User{}, errors.New("login gagal")
+			return u, nil
+		}
 	}
 
-	if u.Password != password {
-		return User{}, errors.New("password salah")
-	}
-
-	return u, nil
+	return User{}, errors.New("login gagal")
 }
 
 func GetProfile(id int) *User {
