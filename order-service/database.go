@@ -246,7 +246,7 @@ func ConnectDB() {
 	port := os.Getenv("DB_PORT")
 
 	if host == "" {
-		host = "localhost"
+		host = "host.docker.internal"
 	}
 
 	if port == "" {
