@@ -42,12 +42,8 @@ func (h *CourierHandler) StartDelivery(w http.ResponseWriter, r *http.Request) {
 		Resi:         req.Resi,
 		CourierID:    req.CourierID,
 		AssignedZone: req.AssignedZone,
-
-		// isi status awal delivery
-		Status: "",
-
-		// waktu pembuatan delivery
-		CreatedAt: time.Now(),
+		Status:       "pending",
+		CreatedAt:    time.Now(),
 	}
 
 	// panggil service StartDelivery
