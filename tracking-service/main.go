@@ -19,10 +19,31 @@ func main() {
 		panic(err)
 	}
 
+	// ==================================
+	// CREATE TABLE OTOMATIS
+	// ==================================
+	query := `
+	CREATE TABLE IF NOT EXISTS tracking_events (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		resi VARCHAR(100),
+		lokasi VARCHAR(255),
+		event VARCHAR(255),
+		timestamp DATETIME
+	)
+	`
+
+	_, err = db.Exec(query)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("TRACKING TABLE READY")
+
 	trackingRepo = MySQLRepository{
 		DB: db,
 	}
-	
+
 	// Endpoint untuk Tracking Service
 	http.HandleFunc("/tracking", getTrackingHandler)
 	http.HandleFunc("/tracking/event", insertTrackingEventHandler)
