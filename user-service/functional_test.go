@@ -81,9 +81,9 @@ func TestUserFlow_Functional(t *testing.T) {
 
 	t.Log("REGISTER SUCCESS")
 
-	// ==================================
-	// 5. LOGIN
-	// ==================================
+// ==================================
+// 5. LOGIN
+// ==================================
 	respLogin, err := http.Post(
 		"http://host.docker.internal:8081/login",
 		"application/json",
@@ -96,15 +96,29 @@ func TestUserFlow_Functional(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+    defer respLogin.Body.Close()
 
-	var login map[string]string
+	// Gunakan map[string]interface{} agar bisa menangkap tipe data apapun (termasuk error messages)
+	var login map[string]interface{}
+	err = json.NewDecoder(respLogin.Body).Decode(&login)
+	if err != nil {
+		t.Fatalf("gagal membaca respons JSON: %v", err)
+	}
 
-	json.NewDecoder(respLogin.Body).Decode(&login)
+	// Tampilkan pesan error aktual dari server jika status bukan 200 OK
+	if respLogin.StatusCode != http.StatusOK {
+		t.Fatalf("login failed with status %d. Response: %+v", respLogin.StatusCode, login)
+	}
 
-	token := login["token"]
+	// Pengecekan token dengan aman
+	tokenInterface, exists := login["token"]
+	if !exists {
+		t.Fatalf("login berhasil tetapi tidak ada key 'token' di respons. Response: %+v", login)
+	}
 
-	if token == "" {
-		t.Fatal("login failed")
+	token, ok := tokenInterface.(string)
+	if !ok || token == "" {
+		t.Fatalf("token kosong atau bukan string. Response: %+v", login)
 	}
 
 	t.Log("LOGIN SUCCESS")
