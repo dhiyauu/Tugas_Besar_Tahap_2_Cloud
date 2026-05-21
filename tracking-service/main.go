@@ -4,16 +4,36 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
 
-	db, err := sql.Open(
-		"mysql",
-		"root:root@tcp(mysql:3306)/tubesdb",
-	)
+	var db *sql.DB
+	var err error
+
+	// Retry koneksi MySQL
+	for i := 0; i < 10; i++ {
+
+		db, err = sql.Open(
+			"mysql",
+			"root:root@tcp(mysql:3306)/tubesdb",
+		)
+
+		if err == nil {
+
+			err = db.Ping()
+
+			if err == nil {
+				break
+			}
+		}
+
+		fmt.Println("Waiting MySQL...")
+		time.Sleep(5 * time.Second)
+	}
 
 	if err != nil {
 		panic(err)
