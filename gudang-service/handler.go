@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// Interface untuk memudahkan mocking di test
+// Interface untuk mocking di test
 type SortingServiceInterface interface {
 	StartSorting(pkg *Package) error
 	CompleteSorting(pkg *Package) error
@@ -34,7 +34,7 @@ func (h *SortingHandler) StartSort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validasi manual (karena gak pakai framework seperti gin)
+	// Validasi 
 	if req.Resi == "" {
 		http.Error(w, "Resi is required", http.StatusBadRequest)
 		return
@@ -59,8 +59,7 @@ func (h *SortingHandler) StartSort(w http.ResponseWriter, r *http.Request) {
 	// Simulasi update waktu sorting
 	now := time.Now()
 
-	// (Optional) panggil service kalau ada
-	// h.service.StartSort(req.Resi, req.WarehouseZone, req.Status, now)
+	/* panggil service kalau ada (h.service.StartSort(req.Resi, req.WarehouseZone, req.Status, now) */
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
