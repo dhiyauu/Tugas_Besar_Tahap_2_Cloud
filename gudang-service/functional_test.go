@@ -14,11 +14,13 @@ import (
 func setupTestDB(t *testing.T) {
 	t.Helper()
 
+	// inisialisasi koneksi database
 	err := InitDB()
 	if err != nil {
 		t.Fatalf("database connection failed: %v", err)
 	}
 
+	// validasi apakah database berhasil terkoneksi
 	if GetDB() == nil {
 		t.Fatal("database is nil")
 	}
@@ -31,7 +33,11 @@ func setupServer() *httptest.Server {
 	handler := NewSortingHandler(service)
 
 	mux := http.NewServeMux()
+
+	// endpoint untuk sorting package
 	mux.HandleFunc("/sort", handler.StartSort)
+
+	// endpoint health check service
 	mux.HandleFunc("/health", handler.Health)
 
 	return httptest.NewServer(mux)
@@ -44,11 +50,19 @@ func TestFunctional_StartSort(t *testing.T) {
 	defer server.Close()
 
 	request := SortRequest{
-		Resi:          "RES001",
-		WarehouseZone: "Jakarta",
-		Status:        "sorting",
+
+		// isi dengan nomor resi package
+		Resi: "",
+
+		// warehouse_zone digunakan untuk menunjukkan
+		// area atau zona gudang tempat package disortir
+		WarehouseZone: "",
+
+		// isi dengan status sorting
+		Status: "",
 	}
 
+	// convert request ke format JSON
 	body, _ := json.Marshal(request)
 
 	resp, err := http.Post(
@@ -57,10 +71,12 @@ func TestFunctional_StartSort(t *testing.T) {
 		bytes.NewBuffer(body),
 	)
 
+	// validasi apakah request berhasil dikirim
 	if err != nil {
 		t.Fatalf("request failed: %v", err)
 	}
 
+	// expected response ketika sorting berhasil
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("expected 200 got %d", resp.StatusCode)
 	}
