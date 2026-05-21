@@ -25,7 +25,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "localhost"
+	dbHost = "127.0.0.1"
 	dbPort = "3306"
 	dbName = "tubesdb" // Gunakan database yang sesuai untuk Tubes
 )
@@ -77,7 +77,7 @@ func TestInsertTrackingEvent_Functional(t *testing.T) {
 
 	req, _ := http.NewRequest(
 		"POST",
-		"http://localhost:8084/tracking/event", // Memanggil service lokal yang di-start di atas
+		"http://127.0.0.1:8084/tracking/event", // Memanggil service lokal yang di-start di atas
 		bytes.NewBuffer(body),
 	)
 
