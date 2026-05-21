@@ -1,3 +1,4 @@
+```go
 package main
 
 import (
@@ -12,7 +13,7 @@ func NewCourierService() *CourierService {
 	return &CourierService{}
 }
 
-// StartDelivery - Mulai proses delivery
+// StartDelivery
 func (s *CourierService) StartDelivery(delivery *Delivery) error {
 
 	if delivery == nil {
@@ -28,7 +29,7 @@ func (s *CourierService) StartDelivery(delivery *Delivery) error {
 	}
 
 	if delivery.Status != "pending" {
-		return errors.New("status invalid")
+		return errors.New("delivery belum pending")
 	}
 
 	delivery.Status = "in_delivery"
@@ -36,7 +37,7 @@ func (s *CourierService) StartDelivery(delivery *Delivery) error {
 	return nil
 }
 
-// CompleteDelivery - Selesaikan proses delivery
+// CompleteDelivery
 func (s *CourierService) CompleteDelivery(delivery *Delivery) error {
 
 	if delivery == nil {
@@ -55,7 +56,7 @@ func (s *CourierService) CompleteDelivery(delivery *Delivery) error {
 	return nil
 }
 
-// GetCourierDeliveries - Ambil semua delivery untuk courier tertentu
+// GetCourierDeliveries
 func (s *CourierService) GetCourierDeliveries(
 	deliveries []Delivery,
 	courierID int,
@@ -73,10 +74,8 @@ func (s *CourierService) GetCourierDeliveries(
 	return result
 }
 
-// ValidateDelivery - Validasi delivery data
-func (s *CourierService) ValidateDelivery(
-	delivery *Delivery,
-) error {
+// ValidateDelivery
+func (s *CourierService) ValidateDelivery(delivery *Delivery) error {
 
 	if delivery == nil {
 		return errors.New("delivery nil")
@@ -100,3 +99,4 @@ func (s *CourierService) ValidateDelivery(
 
 	return nil
 }
+```
