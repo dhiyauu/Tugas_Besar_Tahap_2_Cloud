@@ -4,16 +4,19 @@ import (
 	"testing"
 )
 
+// UNIT TESTS - SortingService
+// Tidak boleh mengakses database atau external service
+
 func TestStartSortingSuccess(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		UserID:        0,  // isi dengan user_id valid
-		Resi:          "", // isi dengan nomor resi
-		NamaBarang:    "", // isi dengan nama barang
-		Berat:         0,  // isi dengan berat barang
-		WarehouseZone: "", // isi dengan warehouse zone
-		Status:        "", // isi dengan status pending
+		UserID:        123,
+		Resi:          "RES001",
+		NamaBarang:    "Laptop",
+		Berat:         2,
+		WarehouseZone: "Jakarta",
+		Status:        "pending",
 	}
 
 	err := service.StartSorting(pkg)
@@ -39,10 +42,10 @@ func TestStartSortingEmptyResi(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		UserID:        0,  // isi dengan user_id valid
-		Resi:          "", // kosongkan nomor resi
-		WarehouseZone: "", // isi dengan warehouse zone
-		Status:        "", // isi dengan status pending
+		UserID:        123,
+		Resi:          "",
+		WarehouseZone: "Jakarta",
+		Status:        "pending",
 	}
 
 	err := service.StartSorting(pkg)
@@ -55,10 +58,10 @@ func TestStartSortingEmptyWarehouseZone(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		UserID:        0,  // isi dengan user_id valid
-		Resi:          "", // isi dengan nomor resi
-		WarehouseZone: "", // kosongkan warehouse zone
-		Status:        "", // isi dengan status pending
+		UserID:        123,
+		Resi:          "RES001",
+		WarehouseZone: "",
+		Status:        "pending",
 	}
 
 	err := service.StartSorting(pkg)
@@ -71,10 +74,10 @@ func TestStartSortingInvalidStatus(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		UserID:        0,  // isi dengan user_id valid
-		Resi:          "", // isi dengan nomor resi
-		WarehouseZone: "", // isi dengan warehouse zone
-		Status:        "", // isi dengan status selain pending
+		UserID:        123,
+		Resi:          "RES001",
+		WarehouseZone: "Jakarta",
+		Status:        "ready",
 	}
 
 	err := service.StartSorting(pkg)
@@ -87,9 +90,9 @@ func TestCompleteSortingSuccess(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		Resi:          "", // isi dengan nomor resi
-		Status:        "", // isi dengan status sorting
-		WarehouseZone: "", // isi dengan warehouse zone
+		Resi:          "RES001",
+		Status:        "sorting",
+		WarehouseZone: "Jakarta",
 	}
 
 	err := service.CompleteSorting(pkg)
@@ -119,9 +122,9 @@ func TestCompleteSortingNotSorting(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		Resi:          "", // isi dengan nomor resi
-		Status:        "", // isi dengan status selain sorting
-		WarehouseZone: "", // isi dengan warehouse zone
+		Resi:          "RES001",
+		Status:        "pending",
+		WarehouseZone: "Jakarta",
 	}
 
 	err := service.CompleteSorting(pkg)
@@ -134,25 +137,14 @@ func TestGetPendingPackagesSuccess(t *testing.T) {
 	service := NewSortingService()
 
 	packages := []Package{
-		{
-			Resi:  "", // isi dengan nomor resi
-			Status: "", // isi dengan status pending
-		},
-		{
-			Resi:  "", // isi dengan nomor resi
-			Status: "", // isi dengan status sorting
-		},
-		{
-			Resi:  "", // isi dengan nomor resi
-			Status: "", // isi dengan status pending
-		},
+		{Resi: "RES001", Status: "pending"},
+		{Resi: "RES002", Status: "sorting"},
+		{Resi: "RES003", Status: "pending"},
 	}
 
 	pending := service.GetPendingPackages(packages)
-
-	// sesuaikan jumlah expected package pending
-	if len(pending) != 0 {
-		t.Errorf("Expected pending packages count mismatch, got %d", len(pending))
+	if len(pending) != 2 {
+		t.Errorf("Expected 2 pending packages, got %d", len(pending))
 	}
 }
 
@@ -160,18 +152,11 @@ func TestGetPendingPackagesEmpty(t *testing.T) {
 	service := NewSortingService()
 
 	packages := []Package{
-		{
-			Resi:  "", // isi dengan nomor resi
-			Status: "", // isi dengan status sorting
-		},
-		{
-			Resi:  "", // isi dengan nomor resi
-			Status: "", // isi dengan status ready
-		},
+		{Resi: "RES001", Status: "sorting"},
+		{Resi: "RES002", Status: "ready"},
 	}
 
 	pending := service.GetPendingPackages(packages)
-
 	if len(pending) != 0 {
 		t.Errorf("Expected 0 pending packages, got %d", len(pending))
 	}
@@ -181,10 +166,10 @@ func TestValidatePackageSuccess(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		Resi:          "", // isi dengan nomor resi
-		UserID:        0,  // isi dengan user_id valid
-		Berat:         0,  // isi dengan berat barang
-		WarehouseZone: "", // isi dengan warehouse zone
+		Resi:          "RES001",
+		UserID:        123,
+		Berat:         2,
+		WarehouseZone: "Jakarta",
 	}
 
 	err := service.ValidatePackage(pkg)
@@ -206,10 +191,10 @@ func TestValidatePackageEmptyResi(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		Resi:          "", // kosongkan nomor resi
-		UserID:        0,  // isi dengan user_id valid
-		Berat:         0,  // isi dengan berat barang
-		WarehouseZone: "", // isi dengan warehouse zone
+		Resi:          "",
+		UserID:        123,
+		Berat:         2,
+		WarehouseZone: "Jakarta",
 	}
 
 	err := service.ValidatePackage(pkg)
@@ -222,10 +207,10 @@ func TestValidatePackageInvalidUserID(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		Resi:          "", // isi dengan nomor resi
-		UserID:        0,  // isi dengan user_id tidak valid
-		Berat:         0,  // isi dengan berat barang
-		WarehouseZone: "", // isi dengan warehouse zone
+		Resi:          "RES001",
+		UserID:        0,
+		Berat:         2,
+		WarehouseZone: "Jakarta",
 	}
 
 	err := service.ValidatePackage(pkg)
@@ -238,10 +223,10 @@ func TestValidatePackageInvalidWeight(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		Resi:          "", // isi dengan nomor resi
-		UserID:        0,  // isi dengan user_id valid
-		Berat:         0,  // isi dengan berat tidak valid
-		WarehouseZone: "", // isi dengan warehouse zone
+		Resi:          "RES001",
+		UserID:        123,
+		Berat:         0,
+		WarehouseZone: "Jakarta",
 	}
 
 	err := service.ValidatePackage(pkg)
@@ -254,10 +239,10 @@ func TestValidatePackageEmptyWarehouseZone(t *testing.T) {
 	service := NewSortingService()
 
 	pkg := &Package{
-		Resi:          "", // isi dengan nomor resi
-		UserID:        0,  // isi dengan user_id valid
-		Berat:         0,  // isi dengan berat barang
-		WarehouseZone: "", // kosongkan warehouse zone
+		Resi:          "RES001",
+		UserID:        123,
+		Berat:         2,
+		WarehouseZone: "",
 	}
 
 	err := service.ValidatePackage(pkg)
@@ -266,38 +251,34 @@ func TestValidatePackageEmptyWarehouseZone(t *testing.T) {
 	}
 }
 
-// Benchmark StartSorting
+// ============================================
+// BENCHMARKS
+// ============================================
+
 func BenchmarkStartSorting(b *testing.B) {
 	service := NewSortingService()
-
 	pkg := &Package{
-		UserID:        0,  // isi dengan user_id valid
-		Resi:          "", // isi dengan nomor resi
-		WarehouseZone: "", // isi dengan warehouse zone
-		Status:        "", // isi dengan status pending
+		UserID:        123,
+		Resi:          "RES001",
+		WarehouseZone: "Jakarta",
+		Status:        "pending",
 	}
 
-	/* function dijalankan berulang kali untuk mengukur performa sorting */
 	for i := 0; i < b.N; i++ {
 		service.StartSorting(pkg)
-
-		// reset status package
-		pkg.Status = ""
+		pkg.Status = "pending"
 	}
 }
 
-// Benchmark ValidatePackage
 func BenchmarkValidatePackage(b *testing.B) {
 	service := NewSortingService()
-
 	pkg := &Package{
-		Resi:          "", // isi dengan nomor resi
-		UserID:        0,  // isi dengan user_id valid
-		Berat:         0,  // isi dengan berat barang
-		WarehouseZone: "", // isi dengan warehouse zone
+		Resi:          "RES001",
+		UserID:        123,
+		Berat:         2,
+		WarehouseZone: "Jakarta",
 	}
 
-	/* function dijalankan berulang kali untuk mengukur performa validasi package */
 	for i := 0; i < b.N; i++ {
 		service.ValidatePackage(pkg)
 	}
