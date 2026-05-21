@@ -5,57 +5,53 @@ import (
 	"time"
 )
 
-type CourierService struct {
-}
+type CourierService struct{}
 
 func NewCourierService() *CourierService {
 	return &CourierService{}
 }
 
-// StartDelivery
-func (s *CourierService) StartDelivery(delivery *Delivery) error {
+func (s *CourierService) StartDelivery(d *Delivery) error {
 
-	if delivery == nil {
+	if d == nil {
 		return errors.New("delivery nil")
 	}
 
-	if delivery.Resi == "" {
+	if d.Resi == "" {
 		return errors.New("resi kosong")
 	}
 
-	if delivery.CourierID <= 0 {
+	if d.CourierID <= 0 {
 		return errors.New("courier invalid")
 	}
 
-	if delivery.Status != "pending" {
+	if d.Status != "pending" {
 		return errors.New("delivery belum pending")
 	}
 
-	delivery.Status = "in_delivery"
+	d.Status = "in_delivery"
 
 	return nil
 }
 
-// CompleteDelivery
-func (s *CourierService) CompleteDelivery(delivery *Delivery) error {
+func (s *CourierService) CompleteDelivery(d *Delivery) error {
 
-	if delivery == nil {
+	if d == nil {
 		return errors.New("delivery nil")
 	}
 
-	if delivery.Status != "in_delivery" {
+	if d.Status != "in_delivery" {
 		return errors.New("delivery belum berjalan")
 	}
 
 	now := time.Now()
 
-	delivery.Status = "delivered"
-	delivery.DeliveredAt = &now
+	d.Status = "delivered"
+	d.DeliveredAt = &now
 
 	return nil
 }
 
-// GetCourierDeliveries
 func (s *CourierService) GetCourierDeliveries(
 	deliveries []Delivery,
 	courierID int,
@@ -73,27 +69,24 @@ func (s *CourierService) GetCourierDeliveries(
 	return result
 }
 
-// ValidateDelivery
-func (s *CourierService) ValidateDelivery(delivery *Delivery) error {
+func (s *CourierService) ValidateDelivery(
+	d *Delivery,
+) error {
 
-	if delivery == nil {
+	if d == nil {
 		return errors.New("delivery nil")
 	}
 
-	if delivery.Resi == "" {
+	if d.Resi == "" {
 		return errors.New("resi kosong")
 	}
 
-	if delivery.CourierID <= 0 {
+	if d.CourierID <= 0 {
 		return errors.New("courier invalid")
 	}
 
-	if delivery.NamaPenerima == "" {
+	if d.NamaPenerima == "" {
 		return errors.New("nama penerima kosong")
-	}
-
-	if delivery.AlamatPenerima == "" {
-		return errors.New("alamat penerima kosong")
 	}
 
 	return nil
