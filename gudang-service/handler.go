@@ -26,6 +26,7 @@ func NewSortingHandler(service SortingServiceInterface) *SortingHandler {
 
 // POST /sort
 func (h *SortingHandler) StartSort(w http.ResponseWriter, r *http.Request) {
+
 	var req SortRequest
 
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -34,7 +35,6 @@ func (h *SortingHandler) StartSort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validasi 
 	if req.Resi == "" {
 		http.Error(w, "Resi is required", http.StatusBadRequest)
 		return
@@ -45,30 +45,16 @@ func (h *SortingHandler) StartSort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Status == "" {
-		http.Error(w, "Status is required", http.StatusBadRequest)
-		return
-	}
-
-	// Validasi status (biar realistis)
-	if req.Status != "sorting" {
-		http.Error(w, "Invalid status, must be 'sorting'", http.StatusBadRequest)
-		return
-	}
-
-	// Simulasi update waktu sorting
 	now := time.Now()
-
-	/* panggil service kalau ada (h.service.StartSort(req.Resi, req.WarehouseZone, req.Status, now) */
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"status":          "sorting started",
-		"resi":            req.Resi,
-		"warehouse_zone":  req.WarehouseZone,
-		"sorted_at":       now,
+		"status":         "sorting started",
+		"resi":           req.Resi,
+		"warehouse_zone": req.WarehouseZone,
+		"sorted_at":      now,
 	})
 }
 
