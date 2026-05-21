@@ -236,7 +236,7 @@ pipeline {
         
                 sh 'docker-compose up -d --build'
         
-                sleep time: 20, unit: 'SECONDS'
+                sleep time: 40, unit: 'SECONDS'
         
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
         
