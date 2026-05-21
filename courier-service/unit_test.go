@@ -8,11 +8,11 @@ func TestStartDeliverySuccess(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		CourierID:      0,  // isi dengan courier_id valid
-		Resi:           "", // isi dengan nomor resi
-		NamaPenerima:   "", // isi dengan nama penerima
-		AlamatPenerima: "", // isi dengan alamat penerima
-		Status:         "", // isi dengan status awal delivery
+		CourierID:      1,
+		Resi:           "RESI001",
+		NamaPenerima:   "Budi",
+		AlamatPenerima: "Jakarta",
+		Status:         "pending",
 	}
 
 	err := service.StartDelivery(delivery)
@@ -29,9 +29,9 @@ func TestStartDeliveryInvalidCourier(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		CourierID: 0,  // isi dengan courier_id tidak valid
-		Resi:      "", // isi dengan nomor resi
-		Status:    "", // isi dengan status delivery
+		CourierID: 0,
+		Resi:      "RESI001",
+		Status:    "pending",
 	}
 
 	err := service.StartDelivery(delivery)
@@ -44,9 +44,9 @@ func TestStartDeliveryEmptyResi(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		CourierID: 0,  // isi dengan courier_id valid
-		Resi:      "", // kosongkan nomor resi
-		Status:    "", // isi dengan status delivery
+		CourierID: 1,
+		Resi:      "",
+		Status:    "pending",
 	}
 
 	err := service.StartDelivery(delivery)
@@ -59,9 +59,9 @@ func TestStartDeliveryNotPendingStatus(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		CourierID: 0,  // isi dengan courier_id valid
-		Resi:      "", // isi dengan nomor resi
-		Status:    "", // isi dengan status selain pending
+		CourierID: 1,
+		Resi:      "RESI001",
+		Status:    "delivered",
 	}
 
 	err := service.StartDelivery(delivery)
@@ -74,10 +74,10 @@ func TestCompleteDeliverySuccess(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		Resi:           "", // isi dengan nomor resi
-		Status:         "", // isi dengan status in_delivery
-		CourierID:      0,  // isi dengan courier_id valid
-		AlamatPenerima: "", // isi dengan alamat penerima
+		Resi:           "RESI001",
+		Status:         "in_delivery",
+		CourierID:      1,
+		AlamatPenerima: "Jakarta",
 	}
 
 	err := service.CompleteDelivery(delivery)
@@ -98,9 +98,9 @@ func TestCompleteDeliveryNotInProgress(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		Resi:      "", // isi dengan nomor resi
-		Status:    "", // isi dengan status selain in_delivery
-		CourierID: 0,  // isi dengan courier_id valid
+		Resi:      "RESI001",
+		Status:    "pending",
+		CourierID: 1,
 	}
 
 	err := service.CompleteDelivery(delivery)
@@ -123,24 +123,25 @@ func TestGetCourierDeliveries(t *testing.T) {
 
 	deliveries := []Delivery{
 		{
-			CourierID: 0,  // isi dengan courier_id
-			Resi:      "", // isi dengan nomor resi
-			Status:    "", // isi dengan status delivery
+			CourierID: 1,
+			Resi:      "RESI001",
+			Status:    "in_delivery",
 		},
 		{
-			CourierID: 0,  // isi dengan courier_id berbeda
-			Resi:      "", // isi dengan nomor resi
-			Status:    "", // isi dengan status delivery
+			CourierID: 2,
+			Resi:      "RESI002",
+			Status:    "pending",
 		},
 		{
-			CourierID: 0,  // isi dengan courier_id yang sama
-			Resi:      "", // isi dengan nomor resi
-			Status:    "", // isi dengan status delivery
+			CourierID: 1,
+			Resi:      "RESI003",
+			Status:    "delivered",
 		},
 	}
 
-	courierDeliveries := service.GetCourierDeliveries(deliveries, 0) // isi dengan courier_id yang dicari
-	if len(courierDeliveries) != 0 { // sesuaikan jumlah expected delivery
+	courierDeliveries := service.GetCourierDeliveries(deliveries, 1)
+
+	if len(courierDeliveries) != 2 {
 		t.Errorf("Expected deliveries count mismatch, got %d", len(courierDeliveries))
 	}
 }
@@ -150,18 +151,19 @@ func TestGetCourierDeliveriesNoMatch(t *testing.T) {
 
 	deliveries := []Delivery{
 		{
-			CourierID: 0,  // isi dengan courier_id
-			Resi:      "", // isi dengan nomor resi
-			Status:    "", // isi dengan status delivery
+			CourierID: 1,
+			Resi:      "RESI001",
+			Status:    "in_delivery",
 		},
 		{
-			CourierID: 0,  // isi dengan courier_id
-			Resi:      "", // isi dengan nomor resi
-			Status:    "", // isi dengan status delivery
+			CourierID: 2,
+			Resi:      "RESI002",
+			Status:    "pending",
 		},
 	}
 
-	courierDeliveries := service.GetCourierDeliveries(deliveries, 0) // isi dengan courier_id yang tidak ada
+	courierDeliveries := service.GetCourierDeliveries(deliveries, 99)
+
 	if len(courierDeliveries) != 0 {
 		t.Errorf("Expected 0 deliveries, got %d", len(courierDeliveries))
 	}
@@ -171,10 +173,10 @@ func TestValidateDeliverySuccess(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		Resi:           "", // isi dengan nomor resi
-		CourierID:      0,  // isi dengan courier_id valid
-		NamaPenerima:   "", // isi dengan nama penerima
-		AlamatPenerima: "", // isi dengan alamat penerima
+		Resi:           "RESI001",
+		CourierID:      1,
+		NamaPenerima:   "Budi",
+		AlamatPenerima: "Jakarta",
 	}
 
 	err := service.ValidateDelivery(delivery)
@@ -187,10 +189,10 @@ func TestValidateDeliveryEmptyResi(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		Resi:           "", // kosongkan nomor resi
-		CourierID:      0,  // isi dengan courier_id valid
-		NamaPenerima:   "", // isi dengan nama penerima
-		AlamatPenerima: "", // isi dengan alamat penerima
+		Resi:           "",
+		CourierID:      1,
+		NamaPenerima:   "Budi",
+		AlamatPenerima: "Jakarta",
 	}
 
 	err := service.ValidateDelivery(delivery)
@@ -203,10 +205,10 @@ func TestValidateDeliveryInvalidCourier(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		Resi:           "", // isi dengan nomor resi
-		CourierID:      0,  // isi dengan courier_id tidak valid
-		NamaPenerima:   "", // isi dengan nama penerima
-		AlamatPenerima: "", // isi dengan alamat penerima
+		Resi:           "RESI001",
+		CourierID:      0,
+		NamaPenerima:   "Budi",
+		AlamatPenerima: "Jakarta",
 	}
 
 	err := service.ValidateDelivery(delivery)
@@ -219,10 +221,10 @@ func TestValidateDeliveryMissingReceiver(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		Resi:           "", // isi dengan nomor resi
-		CourierID:      0,  // isi dengan courier_id valid
-		NamaPenerima:   "", // isi dengan nama penerima
-		AlamatPenerima: "", // kosongkan alamat penerima
+		Resi:           "RESI001",
+		CourierID:      1,
+		NamaPenerima:   "Budi",
+		AlamatPenerima: "",
 	}
 
 	err := service.ValidateDelivery(delivery)
@@ -237,38 +239,5 @@ func TestValidateDeliveryNil(t *testing.T) {
 	err := service.ValidateDelivery(nil)
 	if err == nil {
 		t.Error("Expected error for nil delivery, got nil")
-	}
-}
-
-/* benchmark digunakan untuk mengukur performa atau kecepatan eksekusi function ketika
-dijalankan berulang kali. */
-
-func BenchmarkStartDelivery(b *testing.B) {
-	service := NewCourierService()
-
-	delivery := &Delivery{
-		CourierID: 0,  // isi dengan courier_id valid
-		Resi:      "", // isi dengan nomor resi
-		Status:    "", // isi dengan status pending
-	}
-
-	for i := 0; i < b.N; i++ {
-		service.StartDelivery(delivery)
-		delivery.Status = "" // reset status delivery
-	}
-}
-
-func BenchmarkValidateDelivery(b *testing.B) {
-	service := NewCourierService()
-
-	delivery := &Delivery{
-		Resi:           "", // isi dengan nomor resi
-		CourierID:      0,  // isi dengan courier_id valid
-		NamaPenerima:   "", // isi dengan nama penerima
-		AlamatPenerima: "", // isi dengan alamat penerima
-	}
-
-	for i := 0; i < b.N; i++ {
-		service.ValidateDelivery(delivery)
 	}
 }
