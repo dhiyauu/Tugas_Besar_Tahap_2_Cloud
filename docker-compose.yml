@@ -31,8 +31,6 @@
 # volumes:
 #   mysql_data:
 
-version: '3.9'
-
 services:
 
   user-service:
