@@ -206,42 +206,36 @@ pipeline {
         
                     echo 'Running User Functional Tests...'
         
-                    dir('user-service') {
-                        sh '''
-                        docker run --rm \
-                          --network tubes2-pipeline_default \
-                          -v $(pwd):/app \
-                          -w /app \
-                          golang:1.25 \
-                          go test -v -run Functional ./...
-                        '''
-                    }
+                    sh """
+                    docker run --rm \
+                      --network tubes2-pipeline_default \
+                      -v ${WORKSPACE}/user-service:/app \
+                      -w /app \
+                      golang:1.25 \
+                      go test -v -run Functional ./...
+                    """
         
                     echo 'Running Order Functional Tests...'
         
-                    dir('order-service') {
-                        sh '''
-                        docker run --rm \
-                          --network tubes2-pipeline_default \
-                          -v $(pwd):/app \
-                          -w /app \
-                          golang:1.25 \
-                          go test -v -run Functional ./...
-                        '''
-                    }
+                    sh """
+                    docker run --rm \
+                      --network tubes2-pipeline_default \
+                      -v ${WORKSPACE}/order-service:/app \
+                      -w /app \
+                      golang:1.25 \
+                      go test -v -run Functional ./...
+                    """
         
                     echo 'Running Tracking Functional Tests...'
         
-                    dir('tracking-service') {
-                        sh '''
-                        docker run --rm \
-                          --network tubes2-pipeline_default \
-                          -v $(pwd):/app \
-                          -w /app \
-                          golang:1.25 \
-                          go test -v -run Functional ./...
-                        '''
-                    }
+                    sh """
+                    docker run --rm \
+                      --network tubes2-pipeline_default \
+                      -v ${WORKSPACE}/tracking-service:/app \
+                      -w /app \
+                      golang:1.25 \
+                      go test -v -run Functional ./...
+                    """
                 }
             }
         
