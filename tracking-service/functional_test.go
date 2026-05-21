@@ -25,7 +25,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "mysql"
+	dbHost = "host.docker.internal"
 	dbPort = "3306"
 	dbName = "tubesdb" // Gunakan database yang sesuai untuk Tubes
 )
@@ -66,7 +66,7 @@ func TestInsertTrackingEvent_Functional(t *testing.T) {
 
 	req, _ := http.NewRequest(
 		"POST",
-		"http://tracking-service:8084/tracking/event", // Memanggil service lokal yang di-start di atas
+		"http://host.docker.internal:8084/tracking/event", // Memanggil service lokal yang di-start di atas
 		bytes.NewBuffer(body),
 	)
 
