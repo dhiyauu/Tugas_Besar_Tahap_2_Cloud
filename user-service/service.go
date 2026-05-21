@@ -368,6 +368,14 @@ func Login(email string, password string) (User, error) {
 }
 
 func GetProfile(id int) *User {
+
+	for i := range users {
+
+		if users[i].UserID == id {
+			return &users[i]
+		}
+	}
+
 	return nil
 }
 
