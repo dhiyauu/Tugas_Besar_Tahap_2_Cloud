@@ -5,8 +5,7 @@ import (
 	"time"
 )
 
-type CourierService struct {
-}
+type CourierService struct{}
 
 func NewCourierService() *CourierService {
 	return &CourierService{}
@@ -20,6 +19,14 @@ func (s *CourierService) StartDelivery(d *Delivery) error {
 
 	if d.Resi == "" {
 		return errors.New("resi kosong")
+	}
+
+	if d.CourierID <= 0 {
+		return errors.New("courier invalid")
+	}
+
+	if d.Status != "pending" {
+		return errors.New("status bukan pending")
 	}
 
 	d.Status = "in_delivery"
@@ -74,6 +81,10 @@ func (s *CourierService) ValidateDelivery(d *Delivery) error {
 
 	if d.CourierID <= 0 {
 		return errors.New("courier invalid")
+	}
+
+	if d.NamaPenerima == "" {
+		return errors.New("receiver kosong")
 	}
 
 	return nil
