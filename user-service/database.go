@@ -17,7 +17,7 @@ func ConnectDB() {
 	port := os.Getenv("DB_PORT")
 
 	if host == "" {
-		host = "mysql"
+		host = "localhost"
 	}
 
 	if port == "" {
