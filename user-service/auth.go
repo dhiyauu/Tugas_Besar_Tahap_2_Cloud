@@ -1,10 +1,9 @@
 package main
 
 import (
-	"encoding/base64"
 	"fmt"
-	"strings"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,16 +17,22 @@ func CheckPassword(raw, hash string) bool {
 }
 
 func GenerateToken(id int, role string) string {
-	data := fmt.Sprintf("%d:%s", id, role)
-	return base64.StdEncoding.EncodeToString([]byte(data))
+	return ""
 }
 
-func VerifyToken(t string) bool {
-	decoded, err := base64.StdEncoding.DecodeString(strings.TrimSpace(t))
+func VerifyToken(tokenString string) bool {
+
+	token, err := jwt.Parse(
+		tokenString,
+		func(token *jwt.Token) (interface{}, error) {
+			return jwtKey, nil
+		},
+	)
+
 	if err != nil {
+		fmt.Println(err)
 		return false
 	}
 
-	parts := strings.Split(string(decoded), ":")
-	return len(parts) == 2
+	return token.Valid
 }
