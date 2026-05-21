@@ -14,11 +14,13 @@ import (
 func setupTestDB(t *testing.T) {
 	t.Helper()
 
+	// inisialisasi koneksi database
 	err := InitDB()
 	if err != nil {
 		t.Fatalf("database connection failed: %v", err)
 	}
 
+	// validasi apakah database berhasil terkoneksi
 	if GetDB() == nil {
 		t.Fatal("database is nil")
 	}
@@ -31,8 +33,14 @@ func setupServer() *httptest.Server {
 	handler := NewCourierHandler(service)
 
 	mux := http.NewServeMux()
+
+	// endpoint untuk memulai delivery
 	mux.HandleFunc("/delivery", handler.StartDelivery)
+
+	// endpoint untuk mengambil data delivery courier
 	mux.HandleFunc("/courier/deliveries", handler.GetCourierDeliveries)
+
+	// endpoint health check service
 	mux.HandleFunc("/health", handler.Health)
 
 	return httptest.NewServer(mux)
@@ -45,11 +53,18 @@ func TestFunctional_StartDelivery(t *testing.T) {
 	defer server.Close()
 
 	request := DeliveryRequest{
-		Resi:         "RES001",
-		CourierID:    1,
-		AssignedZone: "Jakarta",
+
+		// isi dengan nomor resi package
+		Resi: "",
+
+		// isi dengan courier_id valid
+		CourierID: 0,
+
+		/* assigned_zone digunakan untuk menunjukkan area atau zona pengiriman courier */
+		AssignedZone: "",
 	}
 
+	// convert request ke format JSON
 	body, _ := json.Marshal(request)
 
 	resp, err := http.Post(
@@ -58,10 +73,12 @@ func TestFunctional_StartDelivery(t *testing.T) {
 		bytes.NewBuffer(body),
 	)
 
+	// validasi apakah request berhasil dikirim
 	if err != nil {
 		t.Fatalf("request failed: %v", err)
 	}
 
+	// expected response ketika delivery berhasil
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("expected 200 got %d", resp.StatusCode)
 	}
