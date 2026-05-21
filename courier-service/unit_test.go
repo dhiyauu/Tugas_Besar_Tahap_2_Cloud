@@ -8,11 +8,11 @@ func TestStartDeliverySuccess(t *testing.T) {
 	service := NewCourierService()
 
 	delivery := &Delivery{
-		CourierID:      1,
-		Resi:           "RESI001",
-		NamaPenerima:   "Budi",
-		AlamatPenerima: "Jakarta",
-		Status:         "pending",
+		Resi:         req.Resi,
+		CourierID:    req.CourierID,
+		AssignedZone: req.AssignedZone,
+		Status:       "pending",
+		CreatedAt:    time.Now(),
 	}
 
 	err := service.StartDelivery(delivery)
