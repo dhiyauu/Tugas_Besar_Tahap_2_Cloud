@@ -216,7 +216,7 @@ func TestCreateOrder_Functional(t *testing.T) {
 	email := fmt.Sprintf("func%d@mail.com", time.Now().UnixNano())
 
 	respReg, err := http.Post(
-		"http://user-service:8081/register",
+		"http://host.docker.internal:8081/register",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Name":"Func",
@@ -239,7 +239,7 @@ func TestCreateOrder_Functional(t *testing.T) {
 	// 4. LOGIN
 	// ==================================
 	respLogin, err := http.Post(
-		"http://user-service:8081/login",
+		"http://host.docker.internal:8081/login",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Email":"%s",
@@ -271,7 +271,7 @@ func TestCreateOrder_Functional(t *testing.T) {
 
 	req, _ := http.NewRequest(
 		"POST",
-		"http://order-service:8083/order",
+		"http://host.docker.internal:8083/order",
 		bytes.NewBuffer(body),
 	)
 
