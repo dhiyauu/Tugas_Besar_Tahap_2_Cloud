@@ -25,7 +25,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "127.0.0.1"
+	dbHost = "mysql"
 	dbPort = "3306"
 	dbName = "tubesdb" // Gunakan database yang sesuai untuk Tubes
 )
@@ -52,18 +52,7 @@ func TestInsertTrackingEvent_Functional(t *testing.T) {
 	t.Log("DATABASE CONNECTED")
 
 	// ==================================
-	// 2. START TRACKING SERVICE LOKAL
-	// ==================================
-	go func() {
-		// Asumsi nama handler kamu adalah insertTrackingEventHandler
-		http.HandleFunc("/tracking/event", insertTrackingEventHandler)
-		http.ListenAndServe(":8084", nil) // Port 8084 khusus untuk tracking
-	}()
-
-	time.Sleep(2 * time.Second)
-
-	// ==================================
-	// 3. INSERT TRACKING EVENT
+	// INSERT TRACKING EVENT
 	// ==================================
 	// Kita buat resi dinamis untuk test
 	resi := fmt.Sprintf("RESI-FUNC-%d", time.Now().UnixNano())
@@ -77,7 +66,7 @@ func TestInsertTrackingEvent_Functional(t *testing.T) {
 
 	req, _ := http.NewRequest(
 		"POST",
-		"http://127.0.0.1:8084/tracking/event", // Memanggil service lokal yang di-start di atas
+		"http://tracking-service:8084/tracking/event", // Memanggil service lokal yang di-start di atas
 		bytes.NewBuffer(body),
 	)
 
