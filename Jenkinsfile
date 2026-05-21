@@ -209,7 +209,7 @@ pipeline {
                     dir('user-service') {
                         sh '''
                         docker run --rm \
-                          --network tubes2_default \
+                          --network tubes2-pipeline_default \
                           -v $(pwd):/app \
                           -w /app \
                           golang:1.25 \
@@ -222,7 +222,7 @@ pipeline {
                     dir('order-service') {
                         sh '''
                         docker run --rm \
-                          --network tubes2_default \
+                          --network tubes2-pipeline_default \
                           -v $(pwd):/app \
                           -w /app \
                           golang:1.25 \
@@ -235,7 +235,7 @@ pipeline {
                     dir('tracking-service') {
                         sh '''
                         docker run --rm \
-                          --network tubes2_default \
+                          --network tubes2-pipeline_default \
                           -v $(pwd):/app \
                           -w /app \
                           golang:1.25 \
