@@ -5,7 +5,13 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
+
+// Kunci rahasia untuk JWT. Sebaiknya nanti diletakkan di .env
+var jwtKey = []byte("rahasia_super_aman_123")
 
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	var req User
@@ -19,32 +25,44 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(map[string]any{
 		"user_id": u.UserID,
-		"name": u.Name,
-		"email": u.Email,
-		"role": u.Role,
+		"name":    u.Name,
+		"email":   u.Email,
+		"role":    u.Role,
 	})
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-
 	var req User
-
 	json.NewDecoder(r.Body).Decode(&req)
 
 	user, err := Login(req.Email, req.Password)
-
 	if err != nil {
 		w.WriteHeader(401)
 		return
 	}
 
+	// 1. Buat masa berlaku token (misal: 24 jam)
+	expirationTime := time.Now().Add(24 * time.Hour)
+	claims := &jwt.RegisteredClaims{
+		Subject:   user.Email,
+		ExpiresAt: jwt.NewNumericDate(expirationTime),
+	}
+
+	// 2. Generate token menggunakan jwtKey
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	// 3. Ubah format balasan menjadi {"token": "..."} agar tes functional lolos
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"user": user,
+		"token": tokenString,
 	})
 }
 
 func profileHandler(w http.ResponseWriter, r *http.Request) {
-
 	auth := r.Header.Get("Authorization")
 	if !strings.HasPrefix(auth, "Bearer ") {
 		w.WriteHeader(401)
