@@ -1,35 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: gudang-service
+
 spec:
   replicas: 2
+
   selector:
     matchLabels:
       app: gudang-service
+
   template:
     metadata:
       labels:
         app: gudang-service
+
     spec:
       containers:
       - name: gudang-service
+
         image: hawadwi/gudang-service:latest
         imagePullPolicy: Always
+
         ports:
         - containerPort: 8080
 
         env:
         - name: DB_HOST
-          value: mysql-gudang
+          value: mysql
+
         - name: DB_PORT
           value: "3306"
+
         - name: DB_USER
           value: root
+
         - name: DB_PASSWORD
           value: root
+
         - name: DB_NAME
-          value: gudang_microservice
+          value: tubesdb
 
         readinessProbe:
           httpGet:
