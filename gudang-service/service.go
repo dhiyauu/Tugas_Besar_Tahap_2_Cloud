@@ -85,7 +85,7 @@ func (s *SortingService) ValidatePackage(pkg *Package) error {
 		return errors.New("user id invalid")
 	}
 
-	if pkg.Weight <= 0 {
+	if pkg.Berat <= 0 {
 		return errors.New("weight invalid")
 	}
 
