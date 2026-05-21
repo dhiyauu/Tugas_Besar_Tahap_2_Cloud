@@ -18,10 +18,6 @@ func (s *SortingService) StartSorting(pkg *Package) error {
 		return errors.New("package nil")
 	}
 
-	if pkg.Resi == "" {
-		return errors.New("resi kosong")
-	}
-
 	if pkg.WarehouseZone == "" {
 		return errors.New("warehouse zone kosong")
 	}
@@ -71,10 +67,6 @@ func (s *SortingService) ValidatePackage(pkg *Package) error {
 
 	if pkg == nil {
 		return errors.New("package nil")
-	}
-
-	if pkg.Resi == "" {
-		return errors.New("resi kosong")
 	}
 
 	if pkg.UserID <= 0 {
