@@ -14,9 +14,9 @@ func TestStartDelivery_Success(t *testing.T) {
 	handler := NewCourierHandler(service)
 
 	body := []byte(`{
-		"resi": "", // isi dengan nomor resi
-		"courier_id": 0, // isi dengan courier_id valid
-		"assigned_zone": "" // isi dengan zona pengiriman
+	    "resi": "RESI001",
+	    "courier_id": 1,
+	    "assigned_zone": "Jakarta"
 	}`)
 
 	req := httptest.NewRequest(http.MethodPost, "/delivery", bytes.NewBuffer(body))
@@ -84,8 +84,8 @@ func TestGetCourierDeliveries_Success(t *testing.T) {
 	handler := NewCourierHandler(service)
 
 	// isi query parameter dengan courier_id valid
-	req := httptest.NewRequest(http.MethodGet, "/courier/deliveries?courier_id=", nil)
-
+	req := httptest.NewRequest( http.MethodGet, "/courier/deliveries?courier_id=1", nil, )
+	
 	w := httptest.NewRecorder()
 
 	handler.GetCourierDeliveries(w, req)
@@ -103,7 +103,7 @@ func TestGetCourierDeliveries_InvalidID(t *testing.T) {
 	handler := NewCourierHandler(service)
 
 	// isi courier_id dengan format yang tidak valid
-	req := httptest.NewRequest(http.MethodGet, "/courier/deliveries?courier_id=", nil)
+	req := httptest.NewRequest( http.MethodGet, "/courier/deliveries?courier_id=abc", nil, )
 
 	w := httptest.NewRecorder()
 
