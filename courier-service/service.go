@@ -5,11 +5,21 @@ import (
 	"time"
 )
 
-// StartDelivery memulai pengiriman
-func StartDelivery(d *Delivery) error {
+type CourierService struct {
+}
+
+func NewCourierService() *CourierService {
+	return &CourierService{}
+}
+
+func (s *CourierService) StartDelivery(d *Delivery) error {
 
 	if d == nil {
 		return errors.New("delivery nil")
+	}
+
+	if d.Resi == "" {
+		return errors.New("resi kosong")
 	}
 
 	d.Status = "in_delivery"
@@ -17,11 +27,14 @@ func StartDelivery(d *Delivery) error {
 	return nil
 }
 
-// CompleteDelivery menyelesaikan pengiriman
-func CompleteDelivery(d *Delivery) error {
+func (s *CourierService) CompleteDelivery(d *Delivery) error {
 
 	if d == nil {
 		return errors.New("delivery nil")
+	}
+
+	if d.Status != "in_delivery" {
+		return errors.New("delivery belum berjalan")
 	}
 
 	now := time.Now()
@@ -32,8 +45,7 @@ func CompleteDelivery(d *Delivery) error {
 	return nil
 }
 
-// GetCourierDeliveries mengambil delivery berdasarkan courier
-func GetCourierDeliveries(
+func (s *CourierService) GetCourierDeliveries(
 	deliveries []Delivery,
 	courierID int,
 ) []Delivery {
@@ -50,8 +62,7 @@ func GetCourierDeliveries(
 	return result
 }
 
-// ValidateDelivery validasi sederhana
-func ValidateDelivery(d *Delivery) error {
+func (s *CourierService) ValidateDelivery(d *Delivery) error {
 
 	if d == nil {
 		return errors.New("delivery nil")
