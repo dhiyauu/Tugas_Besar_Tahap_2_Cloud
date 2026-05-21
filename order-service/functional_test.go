@@ -174,7 +174,7 @@ import (
 const (
 	dbUser = "root"
 	dbPass = "root"
-	dbHost = "localhost"
+	dbHost = "127.0.0.1"
 	dbPort = "3306"
 	dbName = "tubesdb"
 )
@@ -206,7 +206,7 @@ func TestCreateOrder_Functional(t *testing.T) {
 	email := fmt.Sprintf("func%d@mail.com", time.Now().UnixNano())
 
 	respReg, err := http.Post(
-		"http://localhost:8081/register",
+		"http://127.0.0.1t:8081/register",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Name":"Func",
@@ -229,7 +229,7 @@ func TestCreateOrder_Functional(t *testing.T) {
 	// 4. LOGIN
 	// ==================================
 	respLogin, err := http.Post(
-		"http://localhost:8081/login",
+		"http://127.0.0.1:8081/login",
 		"application/json",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{
 			"Email":"%s",
@@ -261,7 +261,7 @@ func TestCreateOrder_Functional(t *testing.T) {
 
 	req, _ := http.NewRequest(
 		"POST",
-		"http://localhost:8083/order",
+		"http://127.0.0.1:8083/order",
 		bytes.NewBuffer(body),
 	)
 
