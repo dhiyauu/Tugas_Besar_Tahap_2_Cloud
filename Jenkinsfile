@@ -128,6 +128,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = "docker.io/dhiyauu"
         IMAGE_TAG = "${env.BUILD_ID}"
+        KUBECONFIG = "/var/jenkins_home/.kube/config"
     }
 
     stages {
