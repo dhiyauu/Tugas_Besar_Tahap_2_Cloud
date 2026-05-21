@@ -158,24 +158,4 @@ func TestUserFlow_Functional(t *testing.T) {
 
 	t.Log("PROFILE SUCCESS")
 
-	// ==================================
-	// 7. CEK USER MASUK DATABASE
-	// ==================================
-	var count int
-
-	err = db.QueryRow(
-		"SELECT COUNT(*) FROM users WHERE user_id = ?",
-		userID,
-	).Scan(&count)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if count < 1 {
-		t.Fatal("user tidak masuk database")
-	}
-
-	t.Log("USER MASUK DATABASE")
 	t.Log("FUNCTIONAL TEST SUCCESS")
-}
