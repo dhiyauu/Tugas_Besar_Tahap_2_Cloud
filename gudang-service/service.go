@@ -18,10 +18,6 @@ func (s *SortingService) StartSorting(pkg *Package) error {
 		return errors.New("package nil")
 	}
 
-	if pkg.WarehouseZone == "" {
-		return errors.New("warehouse zone kosong")
-	}
-
 	if pkg.Status != "pending" {
 		return errors.New("status tidak pending")
 	}
@@ -69,16 +65,8 @@ func (s *SortingService) ValidatePackage(pkg *Package) error {
 		return errors.New("package nil")
 	}
 
-	if pkg.UserID <= 0 {
-		return errors.New("user id invalid")
-	}
-
 	if pkg.Berat <= 0 {
 		return errors.New("berat invalid")
-	}
-
-	if pkg.WarehouseZone == "" {
-		return errors.New("warehouse zone kosong")
 	}
 
 	return nil
