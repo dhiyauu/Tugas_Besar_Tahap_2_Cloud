@@ -159,3 +159,4 @@ func TestUserFlow_Functional(t *testing.T) {
 	t.Log("PROFILE SUCCESS")
 
 	t.Log("FUNCTIONAL TEST SUCCESS")
+}
