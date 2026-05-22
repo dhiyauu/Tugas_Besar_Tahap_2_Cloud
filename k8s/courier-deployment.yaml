@@ -21,7 +21,7 @@ spec:
       - name: courier-service
 
         image: dhiyauu/courier-service:latest
-        imagePullPolicy: Never
+        imagePullPolicy: Always
 
         ports:
         - containerPort: 8081
