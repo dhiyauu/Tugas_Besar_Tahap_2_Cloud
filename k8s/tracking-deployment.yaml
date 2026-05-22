@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: tracking-service
-        image: tubestahap2-tracking-service:latest
+        image: dhiyauu/tracking-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8084
