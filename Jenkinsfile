@@ -239,44 +239,131 @@ pipeline {
             }
         }
 
-       stage('5. Functional Tests') {
+       // stage('5. Functional Tests') {
+       //      steps {
+        
+       //          sh 'docker-compose up -d --build'
+        
+       //          sleep time: 40, unit: 'SECONDS'
+        
+       //          catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+        
+       //              echo 'Running User Functional Tests...'
+       //              dir('user-service') {
+       //                  sh 'go test -tags=functional -v -run Functional ./...'
+       //              }
+        
+       //              echo 'Running Order Functional Tests...'
+       //              dir('order-service') {
+       //                  sh 'go test -tags=functional -v -run Functional ./...'
+       //              }
+        
+       //              echo 'Running Tracking Functional Tests...'
+       //              dir('tracking-service') {
+       //                  sh 'go test -tags=functional -v -run Functional ./...'
+       //              }
+        
+       //              echo 'Running Gudang Functional Tests...'
+       //              dir('gudang-service') {
+       //                  sh 'go test -tags=functional -v -run Functional ./...'
+       //              }
+        
+       //              echo 'Running Courier Functional Tests...'
+       //              dir('courier-service') {
+       //                  sh 'go test -tags=functional -v -run Functional ./...'
+       //              }
+        
+       //              echo 'Running Report Functional Tests...'
+       //              dir('report-service') {
+       //                  sh 'go test -tags=functional -v -run Functional ./...'
+       //              }
+       //          }
+       //      }
+        
+       //      post {
+       //          always {
+       //              sh 'docker-compose down'
+       //          }
+       //      }
+       //  }
+
+              stage('5. Functional Tests') {
             steps {
         
                 sh 'docker-compose up -d --build'
         
                 sleep time: 40, unit: 'SECONDS'
         
-                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                echo 'Running User Functional Tests...'
+                dir('user-service') {
+                    sh '''
+                    DB_HOST=host.docker.internal \
+                    DB_PORT=3306 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
+                    DB_NAME=tubesdb \
+                    go test -tags=functional -v -run Functional ./...
+                    '''
+                }
         
-                    echo 'Running User Functional Tests...'
-                    dir('user-service') {
-                        sh 'go test -tags=functional -v -run Functional ./...'
-                    }
+                echo 'Running Order Functional Tests...'
+                dir('order-service') {
+                    sh '''
+                    DB_HOST=host.docker.internal \
+                    DB_PORT=3306 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
+                    DB_NAME=tubesdb \
+                    go test -tags=functional -v -run Functional ./...
+                    '''
+                }
         
-                    echo 'Running Order Functional Tests...'
-                    dir('order-service') {
-                        sh 'go test -tags=functional -v -run Functional ./...'
-                    }
+                echo 'Running Tracking Functional Tests...'
+                dir('tracking-service') {
+                    sh '''
+                    DB_HOST=host.docker.internal \
+                    DB_PORT=3306 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
+                    DB_NAME=tubesdb \
+                    go test -tags=functional -v -run Functional ./...
+                    '''
+                }
         
-                    echo 'Running Tracking Functional Tests...'
-                    dir('tracking-service') {
-                        sh 'go test -tags=functional -v -run Functional ./...'
-                    }
+                echo 'Running Gudang Functional Tests...'
+                dir('gudang-service') {
+                    sh '''
+                    DB_HOST=host.docker.internal \
+                    DB_PORT=3306 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
+                    DB_NAME=tubesdb \
+                    go test -tags=functional -v -run Functional ./...
+                    '''
+                }
         
-                    echo 'Running Gudang Functional Tests...'
-                    dir('gudang-service') {
-                        sh 'go test -tags=functional -v -run Functional ./...'
-                    }
+                echo 'Running Courier Functional Tests...'
+                dir('courier-service') {
+                    sh '''
+                    DB_HOST=host.docker.internal \
+                    DB_PORT=3306 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
+                    DB_NAME=tubesdb \
+                    go test -tags=functional -v -run Functional ./...
+                    '''
+                }
         
-                    echo 'Running Courier Functional Tests...'
-                    dir('courier-service') {
-                        sh 'go test -tags=functional -v -run Functional ./...'
-                    }
-        
-                    echo 'Running Report Functional Tests...'
-                    dir('report-service') {
-                        sh 'go test -tags=functional -v -run Functional ./...'
-                    }
+                echo 'Running Report Functional Tests...'
+                dir('report-service') {
+                    sh '''
+                    DB_HOST=host.docker.internal \
+                    DB_PORT=3306 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
+                    DB_NAME=tubesdb \
+                    go test -tags=functional -v -run Functional ./...
+                    '''
                 }
             }
         
