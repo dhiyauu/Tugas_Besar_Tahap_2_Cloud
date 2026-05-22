@@ -14,20 +14,7 @@ import (
 var db *sql.DB
 
 func InitDB() error {
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
-
-	if host == "" || port == "" || user == "" || dbname == "" {
-		return fmt.Errorf("missing required DB environment variables")
-	}
-
-	connStr := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		user, password, host, port, dbname,
-	)
+	connStr := "root:root@tcp(host.docker.internal:3306)/tubesdb?parseTime=true"
 
 	var err error
 
