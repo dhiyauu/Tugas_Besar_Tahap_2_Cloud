@@ -305,13 +305,6 @@ pipeline {
                 sh 'kubectl apply -f k8s/gudang-service.yaml'
                 sh 'kubectl apply -f k8s/courier-service.yaml'
                 sh 'kubectl apply -f k8s/report-service.yaml'
-
-                sh "kubectl set image deployment/user-service user-service=${DOCKER_REGISTRY}/user-service:${IMAGE_TAG}"
-                sh "kubectl set image deployment/order-service order-service=${DOCKER_REGISTRY}/order-service:${IMAGE_TAG}"
-                sh "kubectl set image deployment/tracking-service tracking-service=${DOCKER_REGISTRY}/tracking-service:${IMAGE_TAG}"
-                sh "kubectl set image deployment/gudang-service gudang-service=${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
-                sh "kubectl set image deployment/courier-service courier-service=${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
-                sh "kubectl set image deployment/report-service report-service=${DOCKER_REGISTRY}/report-service:${IMAGE_TAG}"
             }
         }
 
