@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: report-service
-        image: docker.io/dhiyauu/report-service:latest
+        image: dhiyauu/report-service:latest
         imagePullPolicy: Always
 
         ports:
