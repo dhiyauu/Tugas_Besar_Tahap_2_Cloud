@@ -20,7 +20,7 @@ spec:
       containers:
       - name: gudang-service
 
-        image: hawadwi/gudang-service:latest
+        image: hawadwi/gudang-service:72
         imagePullPolicy: Always
 
         ports:
