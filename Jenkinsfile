@@ -228,6 +228,14 @@ pipeline {
                 sh "docker tag gudang-service:latest ${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
                 sh "docker tag courier-service:latest ${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
                 sh "docker tag report-service:latest ${DOCKER_REGISTRY}/report-service:${IMAGE_TAG}"
+
+              // tagging latest
+              sh "docker tag user-service:latest ${DOCKER_REGISTRY}/user-service:latest"
+              sh "docker tag order-service:latest ${DOCKER_REGISTRY}/order-service:latest"
+              sh "docker tag tracking-service:latest ${DOCKER_REGISTRY}/tracking-service:latest"
+              sh "docker tag gudang-service:latest ${DOCKER_REGISTRY}/gudang-service:latest"
+              sh "docker tag courier-service:latest ${DOCKER_REGISTRY}/courier-service:latest"
+              sh "docker tag report-service:latest ${DOCKER_REGISTRY}/report-service:latest"
             }
         }
 
@@ -287,6 +295,13 @@ pipeline {
                 sh "docker push ${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/report-service:${IMAGE_TAG}"
+
+                sh "docker push ${DOCKER_REGISTRY}/user-service:latest"
+                sh "docker push ${DOCKER_REGISTRY}/order-service:latest"
+                sh "docker push ${DOCKER_REGISTRY}/tracking-service:latest"
+                sh "docker push ${DOCKER_REGISTRY}/gudang-service:latest"
+                sh "docker push ${DOCKER_REGISTRY}/courier-service:latest"
+                sh "docker push ${DOCKER_REGISTRY}/report-service:latest"
             }
         }
 
