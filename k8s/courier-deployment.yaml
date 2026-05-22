@@ -20,7 +20,7 @@ spec:
       containers:
       - name: courier-service
 
-        image: tubestahap2-courier-service:latest
+        image: dhiyauu/courier-service:latest
         imagePullPolicy: Never
 
         ports:
