@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestDailyReportEndpoint_ReturnsOK(t *testing.T) {
+func TestFunctional_DailyReportEndpoint_ReturnsOK(t *testing.T) {
 
 	repo := MySQLReportRepository{db: DB}
 	svc := NewReportService(repo)
