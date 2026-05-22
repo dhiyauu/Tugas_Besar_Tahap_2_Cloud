@@ -54,14 +54,11 @@ func TestFunctional_StartDelivery(t *testing.T) {
 
 	request := DeliveryRequest{
 
-		// isi dengan nomor resi package
-		Resi: "",
-
-		// isi dengan courier_id valid
-		CourierID: 0,
-
-		/* assigned_zone digunakan untuk menunjukkan area atau zona pengiriman courier */
-		AssignedZone: "",
+		Resi: "RESI001",
+	
+		CourierID: 1,
+	
+		AssignedZone: "Jakarta",
 	}
 
 	// convert request ke format JSON
