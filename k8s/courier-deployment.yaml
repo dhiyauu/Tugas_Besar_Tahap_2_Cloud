@@ -20,8 +20,8 @@ spec:
       containers:
       - name: courier-service
 
-        image: hawadwi/courier-service:72
-        imagePullPolicy: Always
+        image: tubestahap2-courier-service:latest
+        imagePullPolicy: Never
 
         ports:
         - containerPort: 8081
