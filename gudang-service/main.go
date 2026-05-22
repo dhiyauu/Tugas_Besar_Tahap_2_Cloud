@@ -21,7 +21,7 @@ func InitDB() error {
 	dbname := os.Getenv("DB_NAME")
 
 	if host == "" {
-		host = "mysql"
+		host = "host.docker.internal"
 	}
 
 	if port == "" {
