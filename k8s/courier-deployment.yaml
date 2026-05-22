@@ -20,7 +20,7 @@ spec:
       containers:
       - name: courier-service
 
-        image: hawadwi/courier-service:latest
+        image: hawadwi/courier-service:72
         imagePullPolicy: Always
 
         ports:
