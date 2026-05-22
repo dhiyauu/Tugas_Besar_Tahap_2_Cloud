@@ -21,7 +21,7 @@ spec:
       - name: gudang-service
 
         image: dhiyauu/gudang-service:latest
-        imagePullPolicy: Never
+        imagePullPolicy: Always
 
         ports:
         - containerPort: 8080
