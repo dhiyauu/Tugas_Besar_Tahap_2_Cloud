@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: tubestahap2-user-service:latest
+        image: dhiyauu/user-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
