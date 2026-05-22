@@ -14,7 +14,40 @@ import (
 var db *sql.DB
 
 func InitDB() error {
-	connStr := "root:root@tcp(host.docker.internal:3306)/tubesdb?parseTime=true"
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
+
+	if host == "" {
+		host = "mysql"
+	}
+
+	if port == "" {
+		port = "3306"
+	}
+
+	if user == "" {
+		user = "root"
+	}
+
+	if password == "" {
+		password = "root"
+	}
+
+	if dbname == "" {
+		dbname = "tubesdb"
+	}
+
+	connStr := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		user,
+		password,
+		host,
+		port,
+		dbname,
+	)
 
 	var err error
 
