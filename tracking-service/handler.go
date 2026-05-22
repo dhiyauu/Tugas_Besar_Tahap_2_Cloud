@@ -31,10 +31,7 @@ func insertTrackingEventHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTrackingHandler(w http.ResponseWriter, r *http.Request) {
-	// Mengambil parameter resi dari URL path.
-	// Asumsi format: /tracking?resi=RESI123
 	resi := r.URL.Query().Get("resi")
-	// Jika menggunakan path (GET /tracking/{resi}), pastikan string manipulation
 	if resi == "" {
 		resi = strings.TrimPrefix(r.URL.Path, "/tracking/")
 	}
@@ -81,7 +78,6 @@ func calculateRouteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getCourierLocationHandler(w http.ResponseWriter, r *http.Request) {
-	// Asumsi format: /location?courier_id=123
 	courierID := r.URL.Query().Get("courier_id")
 	if courierID == "" {
 		courierID = strings.TrimPrefix(r.URL.Path, "/location/")
