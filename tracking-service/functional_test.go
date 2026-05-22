@@ -12,16 +12,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// ===============================
-// CONFIG
-// ===============================
-// Kalau docker compose:
-// host = mysql
-//
-// Kalau lokal:
-// host = localhost
-//
-// Sesuaikan kalau perlu.
+// config
 const (
 	dbUser = "root"
 	dbPass = "root"
@@ -32,9 +23,7 @@ const (
 
 func TestInsertTrackingEvent_Functional(t *testing.T) {
 
-	// ==================================
-	// 1. CEK DATABASE BISA DIAKSES
-	// ==================================
+	// cek database
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		dbUser, dbPass, dbHost, dbPort, dbName)
 
@@ -51,10 +40,7 @@ func TestInsertTrackingEvent_Functional(t *testing.T) {
 
 	t.Log("DATABASE CONNECTED")
 
-	// ==================================
-	// INSERT TRACKING EVENT
-	// ==================================
-	// Kita buat resi dinamis untuk test
+	// buat resi dinamis untuk test
 	resi := fmt.Sprintf("RESI-FUNC-%d", time.Now().UnixNano())
 
 	body := []byte(fmt.Sprintf(`{
@@ -87,9 +73,7 @@ func TestInsertTrackingEvent_Functional(t *testing.T) {
 		t.Fatalf("failed: %+v", result)
 	}
 
-	// ==================================
-	// 4. CEK DATA MASUK KE DATABASE
-	// ==================================
+	// cek data masuk ke database
 	var count int
 
 	err = db.QueryRow(
