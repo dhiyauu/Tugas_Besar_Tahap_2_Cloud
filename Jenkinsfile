@@ -346,6 +346,7 @@ pipeline {
                 sh 'kubectl rollout status deployment/report-service --timeout=300s'
             }
         }
+    }
 
     post {
         success {
