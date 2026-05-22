@@ -1,4 +1,5 @@
-//go:build functional
+//go:build functional 
+// +build functional
 
 package main
 
