@@ -325,18 +325,27 @@ pipeline {
 
         stage('8. Verify') {
             steps {
+        
+                sh 'kubectl rollout restart deployment/user-service'
+                sh 'kubectl rollout restart deployment/order-service'
+                sh 'kubectl rollout restart deployment/tracking-service'
+                sh 'kubectl rollout restart deployment/gudang-service'
+                sh 'kubectl rollout restart deployment/courier-service'
+                sh 'kubectl rollout restart deployment/report-service'
+        
+                sleep time: 20, unit: 'SECONDS'
+        
                 sh 'kubectl get pods'
                 sh 'kubectl get svc'
-
-                sh 'kubectl rollout status deployment/user-service --timeout=180s'
-                sh 'kubectl rollout status deployment/order-service --timeout=180s'
-                sh 'kubectl rollout status deployment/tracking-service --timeout=180s'
-                sh 'kubectl rollout status deployment/gudang-service --timeout=180s'
-                sh 'kubectl rollout status deployment/courier-service --timeout=180s'
-                sh 'kubectl rollout status deployment/report-service --timeout=180s'
+        
+                sh 'kubectl rollout status deployment/user-service --timeout=300s'
+                sh 'kubectl rollout status deployment/order-service --timeout=300s'
+                sh 'kubectl rollout status deployment/tracking-service --timeout=300s'
+                sh 'kubectl rollout status deployment/gudang-service --timeout=300s'
+                sh 'kubectl rollout status deployment/courier-service --timeout=300s'
+                sh 'kubectl rollout status deployment/report-service --timeout=300s'
             }
         }
-    }
 
     post {
         success {
