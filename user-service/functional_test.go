@@ -14,9 +14,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// ===============================
-// CONFIG
-// ===============================
+// config
 const (
 	dbUser = "root"
 	dbPass = "root"
@@ -27,9 +25,7 @@ const (
 
 func TestUserFlow_Functional(t *testing.T) {
 
-	// ==================================
-	// 1. CEK DATABASE BISA DIAKSES
-	// ==================================
+	// cet database bisa diakses
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		dbUser, dbPass, dbHost, dbPort, dbName)
 
@@ -46,9 +42,7 @@ func TestUserFlow_Functional(t *testing.T) {
 
 	t.Log("DATABASE CONNECTED")
 
-	// ==================================
-	// REGISTER
-	// ==================================
+	// register
 	email := fmt.Sprintf(
 		"func%d@mail.com",
 		time.Now().UnixNano(),
@@ -81,9 +75,7 @@ func TestUserFlow_Functional(t *testing.T) {
 
 	t.Log("REGISTER SUCCESS")
 
-// ==================================
-// 5. LOGIN
-// ==================================
+	// login
 	respLogin, err := http.Post(
 		"http://host.docker.internal:8081/login",
 		"application/json",
@@ -123,9 +115,7 @@ func TestUserFlow_Functional(t *testing.T) {
 
 	t.Log("LOGIN SUCCESS")
 
-	// ==================================
-	// 6. GET PROFILE
-	// ==================================
+	// get profile
 	reqProfile, _ := http.NewRequest(
 		"GET",
 		fmt.Sprintf(
