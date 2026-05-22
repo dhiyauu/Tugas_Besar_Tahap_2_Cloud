@@ -20,7 +20,7 @@ spec:
       containers:
       - name: gudang-service
 
-        image: tubestahap2-gudang-service:latest
+        image: dhiyauu/gudang-service:latest
         imagePullPolicy: Never
 
         ports:
