@@ -43,15 +43,15 @@ spec:
           value: tubesdb
 
         readinessProbe:
-        httpGet:
-          path: /health
-          port: 8080
-        initialDelaySeconds: 20
-        periodSeconds: 10
-      
-      livenessProbe:
-        httpGet:
-          path: /health
-          port: 8080
-        initialDelaySeconds: 30
-        periodSeconds: 15
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 15
