@@ -4,9 +4,6 @@ import (
 	"testing"
 )
 
-// UNIT TESTS - SortingService
-// Tidak boleh mengakses database atau external service
-
 func TestStartSortingSuccess(t *testing.T) {
 	service := NewSortingService()
 
@@ -250,10 +247,6 @@ func TestValidatePackageEmptyWarehouseZone(t *testing.T) {
 		t.Error("Expected error for empty warehouse_zone, got nil")
 	}
 }
-
-// ============================================
-// BENCHMARKS
-// ============================================
 
 func BenchmarkStartSorting(b *testing.B) {
 	service := NewSortingService()
