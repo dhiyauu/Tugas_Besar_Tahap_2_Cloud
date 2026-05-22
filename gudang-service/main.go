@@ -14,7 +14,7 @@ import (
 var db *sql.DB
 
 func InitDB() error {
-	connStr := "root:root@tcp(mysql:3306)/tubesdb?parseTime=true"
+	connStr := "root:root@tcp(host.docker.internal:3306)/tubesdb?parseTime=true"
 
 	var err error
 
