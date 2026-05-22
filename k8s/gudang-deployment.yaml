@@ -20,8 +20,8 @@ spec:
       containers:
       - name: gudang-service
 
-        image: hawadwi/gudang-service:72
-        imagePullPolicy: Always
+        image: tubestahap2-gudang-service:latest
+        imagePullPolicy: Never
 
         ports:
         - containerPort: 8080
