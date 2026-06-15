@@ -5,6 +5,7 @@ pipeline {
         DOCKER_REGISTRY = "docker.io/dhiyauu"
         IMAGE_TAG = "${env.BUILD_ID}"
         KUBECONFIG = "/var/jenkins_home/.kube/config"
+        PATH = "/usr/local/go/bin:${env.PATH}"
     }
 
     stages {
@@ -17,6 +18,12 @@ pipeline {
 
         stage('2. Unit Tests') {
             steps {
+                sh '''
+                    echo "PATH=$PATH"
+                    which go
+                    go version
+                '''
+                
                 echo 'Running User Service Unit Tests...'
                 dir('user-service') {
                     sh 'go test -v ./... -skip Functional'
