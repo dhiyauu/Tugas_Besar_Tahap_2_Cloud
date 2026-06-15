@@ -26,7 +26,7 @@ const (
 func TestUserFlow_Functional(t *testing.T) {
 
 	// cet database bisa diakses
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?tls=false&parseTime=true",
 		dbUser, dbPass, dbHost, dbPort, dbName)
 
 	t.Logf("Using DSN: %s", dsn)
