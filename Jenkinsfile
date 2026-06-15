@@ -29,7 +29,7 @@ pipeline {
 
                 echo 'Running Payment Service Unit Tests...'
                 dir('payment-service') {
-                    sh 'go test -v'
+                    sh 'go test -v ./... -skip Functional'
                 }
         
                 echo 'Running Tracking Service Unit Tests...'
