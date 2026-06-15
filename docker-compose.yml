@@ -18,8 +18,8 @@ services:
     build: ./payment-service
     ports:
       - "8088:8088"
-  depends_on:
-    - mysql
+    depends_on:
+      - mysql
 
   tracking-service:
     build: ./tracking-service
