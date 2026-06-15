@@ -5,6 +5,7 @@ pipeline {
         DOCKER_REGISTRY = "docker.io/dhiyauu"
         IMAGE_TAG = "${env.BUILD_ID}"
         KUBECONFIG = "/var/jenkins_home/.kube/config"
+        PATH = "/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     }
 
     stages {
@@ -19,36 +20,43 @@ pipeline {
             steps {
                 echo 'Running User Service Unit Tests...'
                 dir('user-service') {
+                    sh 'go version'
                     sh 'go test -v ./... -skip Functional'
                 }
         
                 echo 'Running Order Service Unit Tests...'
                 dir('order-service') {
+                    sh 'go version'
                     sh 'go test -v ./... -skip Functional'
                 }
         
                 echo 'Running Tracking Service Unit Tests...'
                 dir('tracking-service') {
+                    sh 'go version'
                     sh 'go test -v ./... -skip Functional'
                 }
 
                 echo 'Running Gudang Service Unit Tests...'
                 dir('gudang-service') {
+                    sh 'go version'
                     sh 'go test -v ./... -skip Functional'
                 }
 
                 echo 'Running Courier Service Unit Tests...'
                 dir('courier-service') {
+                    sh 'go version'
                     sh 'go test -v ./... -skip Functional'
                 }
 
                 echo 'Running Report Service Unit Tests...'
                 dir('report-service') {
+                    sh 'go version'
                     sh 'go test -v ./... -skip Functional'
                 }
 
                 echo 'Running Payment Service Unit Tests...'
                 dir('payment-service') {
+                    sh 'go version'
                     sh 'go test -v ./... -skip Functional'
                 }
             }
@@ -132,7 +140,7 @@ pipeline {
         stage('5. Functional Tests') {
             steps {
         
-                sh 'docker-compose up -d --build'
+                sh 'docker compose up -d'
         
                 sleep time: 40, unit: 'SECONDS'
         
@@ -223,7 +231,7 @@ pipeline {
         
             post {
                 always {
-                    sh 'docker-compose down'
+                    sh 'docker compose down'
                 }
             }
         }
