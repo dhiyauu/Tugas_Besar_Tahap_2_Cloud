@@ -141,7 +141,7 @@ pipeline {
         
                 sh 'docker compose up -d'
         
-                sleep time: 40, unit: 'SECONDS'
+                sleep time: 90, unit: 'SECONDS'
         
                 echo 'Running User Functional Tests...'
                 dir('user-service') {
