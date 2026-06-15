@@ -16,11 +16,11 @@ import (
 
 // config
 const (
-	dbUser = "tester"
-    dbPass = "tester123"
-    dbHost = "host.docker.internal"
-    dbPort = "3306"
-    dbName = "tubesdb"
+	dbUser = "admin"
+	dbPass = "admin123"
+	dbHost = "host.docker.internal"
+	dbPort = "3306"
+	dbName = "tubesdb"
 )
 
 func TestUserFlow_Functional(t *testing.T) {
