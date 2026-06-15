@@ -148,8 +148,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=root \
-                    DB_PASSWORD=root \
+                    DB_USER=admin \
+                    DB_PASSWORD=admin123 \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -160,8 +160,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=root \
-                    DB_PASSWORD=root \
+                    DB_USER=admin \
+                    DB_PASSWORD=admin123 \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -172,8 +172,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=root \
-                    DB_PASSWORD=root \
+                    DB_USER=admin \
+                    DB_PASSWORD=admin123 \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -184,8 +184,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=root \
-                    DB_PASSWORD=root \
+                    DB_USER=admin \
+                    DB_PASSWORD=admin123 \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -196,8 +196,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=root \
-                    DB_PASSWORD=root \
+                    DB_USER=admin \
+                    DB_PASSWORD=admin123 \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -208,8 +208,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=root \
-                    DB_PASSWORD=root \
+                    DB_USER=admin \
+                    DB_PASSWORD=admin123 \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -220,8 +220,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=root \
-                    DB_PASSWORD=root \
+                    DB_USER=admin \
+                    DB_PASSWORD=admin123 \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
