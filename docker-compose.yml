@@ -1,49 +1,48 @@
 services:
-
   user-service:
-    build: ./user-service
+    image: user-service:latest
     ports:
       - "8081:8081"
     depends_on:
       - mysql
 
   order-service:
-    build: ./order-service
+    image: order-service:latest
     ports:
       - "8083:8083"
     depends_on:
       - mysql
 
   payment-service:
-    build: ./payment-service
+    image: payment-service:latest
     ports:
       - "8088:8088"
     depends_on:
       - mysql
 
   tracking-service:
-    build: ./tracking-service
+    image: tracking-service:latest
     ports:
       - "8084:8084"
     depends_on:
       - mysql
 
   gudang-service:
-    build: ./gudang-service
+    image: gudang-service:latest
     ports:
       - "8085:8085"
     depends_on:
       - mysql
 
   courier-service:
-    build: ./courier-service
+    image: courier-service:latest
     ports:
       - "8086:8086"
     depends_on:
       - mysql
 
   report-service:
-    build: ./report-service
+    image: report-service:latest
     ports:
       - "8087:8087"
     depends_on:
@@ -58,10 +57,6 @@ services:
       MYSQL_DATABASE: tubesdb
     ports:
       - "3306:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
     volumes:
       - mysql_data:/var/lib/mysql
 
