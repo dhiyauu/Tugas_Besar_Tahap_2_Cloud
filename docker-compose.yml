@@ -48,7 +48,7 @@ services:
     depends_on:
       - mysql
 
- mysql:
+  mysql:
     image: mysql:8
     restart: always
     environment:
@@ -58,8 +58,8 @@ services:
       MYSQL_PASSWORD: tester123
     ports:
       - "3306:3306"
-      volumes:
-        - mysql_data:/var/lib/mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
 
 volumes:
   mysql_data:
