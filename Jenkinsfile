@@ -140,7 +140,7 @@ pipeline {
         stage('5. Functional Tests') {
             steps {
         
-                sh 'docker compose up -d'
+                sh 'docker-compose up -d --build'
         
                 sleep time: 40, unit: 'SECONDS'
         
@@ -231,7 +231,7 @@ pipeline {
         
             post {
                 always {
-                    sh 'docker compose down'
+                    sh 'docker-compose down'
                 }
             }
         }
