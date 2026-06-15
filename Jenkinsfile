@@ -26,6 +26,11 @@ pipeline {
                 dir('order-service') {
                     sh 'go test -v ./... -skip Functional'
                 }
+
+                echo 'Running Payment Service Unit Tests...'
+                dir('payment-service') {
+                    sh 'go test -v'
+                }
         
                 echo 'Running Tracking Service Unit Tests...'
                 dir('tracking-service') {
@@ -59,6 +64,10 @@ pipeline {
                     sh 'go vet ./...'
                 }
 
+                dir('payment-service') {
+                    sh 'go vet ./...'
+                }
+
                 dir('tracking-service') {
                     sh 'go vet ./...'
                 }
@@ -85,6 +94,9 @@ pipeline {
                 echo 'Building Order Service Image...'
                 sh 'docker build -t order-service:latest ./order-service'
 
+                echo 'Building Payment Service Image...'
+                sh 'docker build -t payment-service:latest ./payment-service'
+
                 echo 'Building Tracking Service Image...'
                 sh 'docker build -t tracking-service:latest ./tracking-service'
 
@@ -100,6 +112,7 @@ pipeline {
                 // tagging
                 sh "docker tag user-service:latest ${DOCKER_REGISTRY}/user-service:${IMAGE_TAG}"
                 sh "docker tag order-service:latest ${DOCKER_REGISTRY}/order-service:${IMAGE_TAG}"
+                sh "docker tag payment-service:latest ${DOCKER_REGISTRY}/payment-service:${IMAGE_TAG}"
                 sh "docker tag tracking-service:latest ${DOCKER_REGISTRY}/tracking-service:${IMAGE_TAG}"
                 sh "docker tag gudang-service:latest ${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
                 sh "docker tag courier-service:latest ${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
@@ -108,6 +121,7 @@ pipeline {
               // tagging latest
               sh "docker tag user-service:latest ${DOCKER_REGISTRY}/user-service:latest"
               sh "docker tag order-service:latest ${DOCKER_REGISTRY}/order-service:latest"
+              sh "docker tag payment-service:latest ${DOCKER_REGISTRY}/payment-service:latest"
               sh "docker tag tracking-service:latest ${DOCKER_REGISTRY}/tracking-service:latest"
               sh "docker tag gudang-service:latest ${DOCKER_REGISTRY}/gudang-service:latest"
               sh "docker tag courier-service:latest ${DOCKER_REGISTRY}/courier-service:latest"
@@ -146,6 +160,18 @@ pipeline {
                     '''
                 }
         
+                echo 'Running Payment Functional Tests...'
+                dir('payment-service') {
+                    sh '''
+                    DB_HOST=host.docker.internal \
+                    DB_PORT=3306 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
+                    DB_NAME=tubesdb \
+                    go test -tags=functional -v -run Functional ./...
+                    '''
+                }
+
                 echo 'Running Tracking Functional Tests...'
                 dir('tracking-service') {
                     sh '''
@@ -206,6 +232,7 @@ pipeline {
             steps {
                 sh "docker push ${DOCKER_REGISTRY}/user-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/order-service:${IMAGE_TAG}"
+                sh "docker push ${DOCKER_REGISTRY}/payment-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/tracking-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
@@ -213,6 +240,7 @@ pipeline {
 
                 sh "docker push ${DOCKER_REGISTRY}/user-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/order-service:latest"
+                sh "docker push ${DOCKER_REGISTRY}/payment-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/tracking-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/gudang-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/courier-service:latest"
@@ -224,6 +252,7 @@ pipeline {
             steps {
                 sh 'kubectl apply -f k8s/user-deployment.yaml'
                 sh 'kubectl apply -f k8s/order-deployment.yaml'
+                sh 'kubectl apply -f k8s/payment-deployment.yaml'
                 sh 'kubectl apply -f k8s/tracking-deployment.yaml'
                 sh 'kubectl apply -f k8s/gudang-deployment.yaml'
                 sh 'kubectl apply -f k8s/courier-deployment.yaml'
@@ -231,6 +260,7 @@ pipeline {
 
                 sh 'kubectl apply -f k8s/user-service.yaml'
                 sh 'kubectl apply -f k8s/order-service.yaml'
+                sh 'kubectl apply -f k8s/payment-service.yaml'
                 sh 'kubectl apply -f k8s/tracking-service.yaml'
                 sh 'kubectl apply -f k8s/gudang-service.yaml'
                 sh 'kubectl apply -f k8s/courier-service.yaml'
@@ -243,6 +273,7 @@ pipeline {
         
                 sh 'kubectl rollout restart deployment/user-service'
                 sh 'kubectl rollout restart deployment/order-service'
+                sh 'kubectl rollout restart deployment/payment-service'
                 sh 'kubectl rollout restart deployment/tracking-service'
                 sh 'kubectl rollout restart deployment/gudang-service'
                 sh 'kubectl rollout restart deployment/courier-service'
@@ -255,6 +286,7 @@ pipeline {
         
                 sh 'kubectl rollout status deployment/user-service --timeout=300s'
                 sh 'kubectl rollout status deployment/order-service --timeout=300s'
+                sh 'kubectl rollout status deployment/payment-service --timeout=300s'
                 sh 'kubectl rollout status deployment/tracking-service --timeout=300s'
                 sh 'kubectl rollout status deployment/gudang-service --timeout=300s'
                 sh 'kubectl rollout status deployment/courier-service --timeout=300s'
