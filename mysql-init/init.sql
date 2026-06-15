@@ -1,5 +1,0 @@
-CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY 'admin123';
-
-GRANT ALL PRIVILEGES ON tubesdb.* TO 'admin'@'%';
-
-FLUSH PRIVILEGES;
