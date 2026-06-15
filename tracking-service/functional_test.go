@@ -14,11 +14,11 @@ import (
 
 // config
 const (
-	dbUser = "root"
-	dbPass = "root"
+	dbUser = "admin"
+	dbPass = "admin123"
 	dbHost = "host.docker.internal"
 	dbPort = "3306"
-	dbName = "tubesdb" // Gunakan database yang sesuai untuk Tubes
+	dbName = "tubesdb"
 )
 
 func TestInsertTrackingEvent_Functional(t *testing.T) {
