@@ -29,6 +29,8 @@ func TestUserFlow_Functional(t *testing.T) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		dbUser, dbPass, dbHost, dbPort, dbName)
 
+	t.Logf("Using DSN: %s", dsn)
+
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		t.Fatal(err)
