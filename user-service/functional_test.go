@@ -16,8 +16,8 @@ import (
 
 // config
 const (
-	dbUser = "admin"
-	dbPass = "admin123"
+	dbUser = "root"
+	dbPass = "root"
 	dbHost = "host.docker.internal"
 	dbPort = "3306"
 	dbName = "tubesdb"
@@ -26,10 +26,8 @@ const (
 func TestUserFlow_Functional(t *testing.T) {
 
 	// cet database bisa diakses
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?tls=false&parseTime=true",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		dbUser, dbPass, dbHost, dbPort, dbName)
-
-	t.Logf("Using DSN: %s", dsn)
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {

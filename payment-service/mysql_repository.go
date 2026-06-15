@@ -1,21 +1,29 @@
 package main
 
-type MySQLRepository struct{}
+import (
+	"database/sql"
+)
 
-func (r MySQLRepository) Save(payment Payment) error {
+type MySQLRepository struct {
+	DB *sql.DB
+}
+
+func (r MySQLRepository) Insert(transaction Transaction) error {
 
 	query := `
-	INSERT INTO payments
-	(order_id, method, payment_option, status)
-	VALUES (?, ?, ?, ?)
+	INSERT INTO transactions
+	(transaction_id, order_id, amount, metode, status, timestamp)
+	VALUES (?, ?, ?, ?, ?, ?)
 	`
 
-	_, err := DB.Exec(
+	_, err := r.DB.Exec(
 		query,
-		payment.OrderID,
-		payment.Method,
-		payment.Option,
-		payment.Status,
+		transaction.TransactionID,
+		transaction.OrderID,
+		transaction.Amount,
+		transaction.Metode,
+		transaction.Status,
+		transaction.Timestamp,
 	)
 
 	return err

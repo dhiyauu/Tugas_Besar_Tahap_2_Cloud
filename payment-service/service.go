@@ -1,25 +1,84 @@
 package main
 
-func CreatePayment(
-	req Payment,
-	repo PaymentRepository,
-) (Payment, error) {
+import (
+	"errors"
+	"fmt"
+	"time"
+)
 
-	req.Status = "pending"
+func CalculatePayment(req CalculateRequest) *CalculateResponse {
 
-	err := repo.Save(req)
+	biayaLayanan := 0
 
-	if err != nil {
-		return Payment{}, err
+	switch req.Layanan {
+
+	case "reguler":
+		biayaLayanan = 5000
+
+	case "ekspres":
+		biayaLayanan = 10000
+
+	case "one-day":
+		biayaLayanan = 20000
+
+	default:
+		return nil
 	}
 
-	return req, nil
+	total := (req.Berat * 1000) + (req.Jarak * 500) + biayaLayanan
+
+	return &CalculateResponse{
+		Biaya: total,
+	}
 }
 
-func GetPayment(id int) *Payment {
-	return nil
+func ProcessPayment(
+	req PaymentRequest,
+	v PaymentValidator,
+	repo PaymentRepository,
+) (Transaction, error) {
+
+	if req.OrderID == 0 {
+		return Transaction{}, errors.New("invalid order id")
+	}
+
+	if req.MetodePembayaran == "" {
+		return Transaction{}, errors.New("payment method is required")
+	}
+
+	if !v.Validate(req) {
+		return Transaction{}, errors.New("invalid payment request")
+	}
+
+	transaction := Transaction{
+		TransactionID: fmt.Sprintf("TRX-%d", time.Now().Unix()),
+		OrderID:       req.OrderID,
+		Amount:        req.Amount,
+		Metode:        req.MetodePembayaran,
+		Status:        "SUCCESS",
+		Timestamp:     time.Now().Format(time.RFC3339),
+	}
+
+	err := repo.Insert(transaction)
+	if err != nil {
+		return Transaction{}, err
+	}
+
+	return transaction, nil
 }
 
-func UpdatePaymentStatus(id int, status string) bool {
-	return false
+func GetTransaction(transactionID string) *Transaction {
+
+	if transactionID == "" {
+		return nil
+	}
+
+	return &Transaction{
+		TransactionID: transactionID,
+		OrderID:       1,
+		Amount:        15000,
+		Metode:        "Transfer",
+		Status:        "SUCCESS",
+		Timestamp:     time.Now().Format(time.RFC3339),
+	}
 }

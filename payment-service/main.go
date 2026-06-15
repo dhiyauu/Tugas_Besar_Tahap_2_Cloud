@@ -1,19 +1,107 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
+	"os"
+	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
 
-	ConnectDB()
+	var db *sql.DB
+	var err error
 
-	http.HandleFunc("/payment", createPaymentHandler)
-	http.HandleFunc("/payment/get", getPaymentHandler)
-	http.HandleFunc("/payment/status", updatePaymentHandler)
+	// Retry koneksi MySQL
+	for i := 0; i < 10; i++ {
+
+		host := os.Getenv("DB_HOST")
+		port := os.Getenv("DB_PORT")
+		user := os.Getenv("DB_USER")
+		password := os.Getenv("DB_PASSWORD")
+		dbname := os.Getenv("DB_NAME")
+
+		if host == "" {
+			host = "host.docker.internal"
+		}
+
+		if port == "" {
+			port = "3306"
+		}
+
+		if user == "" {
+			user = "root"
+		}
+
+		if password == "" {
+			password = "root"
+		}
+
+		if dbname == "" {
+			dbname = "tubesdb"
+		}
+
+		dsn := fmt.Sprintf(
+			"%s:%s@tcp(%s:%s)/%s",
+			user,
+			password,
+			host,
+			port,
+			dbname,
+		)
+
+		db, err = sql.Open("mysql", dsn)
+
+		if err == nil {
+
+			err = db.Ping()
+
+			if err == nil {
+				break
+			}
+		}
+
+		fmt.Println("Waiting MySQL...")
+		time.Sleep(5 * time.Second)
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	// ==================================
+	// CREATE TABLE OTOMATIS
+	// ==================================
+	query := `
+	CREATE TABLE IF NOT EXISTS transactions (
+		transaction_id VARCHAR(100) PRIMARY KEY,
+		order_id INT,
+		amount INT,
+		metode VARCHAR(100),
+		status VARCHAR(50),
+		timestamp DATETIME
+	)
+	`
+
+	_, err = db.Exec(query)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("TRANSACTIONS TABLE READY")
+
+	paymentRepo = MySQLRepository{
+		DB: db,
+	}
+
+	// Endpoint Payment Service
+	http.HandleFunc("/calculate", calculatePaymentHandler)
+	http.HandleFunc("/pay", processPaymentHandler)
 
 	fmt.Println("Payment Service running on :8088")
-
 	http.ListenAndServe(":8088", nil)
 }

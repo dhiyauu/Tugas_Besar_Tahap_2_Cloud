@@ -5,7 +5,6 @@ pipeline {
         DOCKER_REGISTRY = "docker.io/dhiyauu"
         IMAGE_TAG = "${env.BUILD_ID}"
         KUBECONFIG = "/var/jenkins_home/.kube/config"
-        PATH = "/usr/local/go/bin:${env.PATH}"
     }
 
     stages {
@@ -18,12 +17,6 @@ pipeline {
 
         stage('2. Unit Tests') {
             steps {
-                sh '''
-                    echo "PATH=$PATH"
-                    which go
-                    go version
-                '''
-                
                 echo 'Running User Service Unit Tests...'
                 dir('user-service') {
                     sh 'go test -v ./... -skip Functional'
@@ -31,11 +24,6 @@ pipeline {
         
                 echo 'Running Order Service Unit Tests...'
                 dir('order-service') {
-                    sh 'go test -v ./... -skip Functional'
-                }
-
-                echo 'Running Payment Service Unit Tests...'
-                dir('payment-service') {
                     sh 'go test -v ./... -skip Functional'
                 }
         
@@ -58,6 +46,11 @@ pipeline {
                 dir('report-service') {
                     sh 'go test -v ./... -skip Functional'
                 }
+
+                echo 'Running Payment Service Unit Tests...'
+                dir('payment-service') {
+                    sh 'go test -v ./... -skip Functional'
+                }
             }
         }
 
@@ -71,10 +64,6 @@ pipeline {
                     sh 'go vet ./...'
                 }
 
-                dir('payment-service') {
-                    sh 'go vet ./...'
-                }
-
                 dir('tracking-service') {
                     sh 'go vet ./...'
                 }
@@ -88,6 +77,10 @@ pipeline {
                 }
 
                 dir('report-service') {
+                    sh 'go vet ./...'
+                }
+
+                dir('payment-service') {
                     sh 'go vet ./...'
                 }
             }
@@ -101,9 +94,6 @@ pipeline {
                 echo 'Building Order Service Image...'
                 sh 'docker build -t order-service:latest ./order-service'
 
-                echo 'Building Payment Service Image...'
-                sh 'docker build -t payment-service:latest ./payment-service'
-
                 echo 'Building Tracking Service Image...'
                 sh 'docker build -t tracking-service:latest ./tracking-service'
 
@@ -116,40 +106,43 @@ pipeline {
                 echo 'Building Report Service Image...'
                 sh 'docker build -t report-service:latest ./report-service'
 
+                echo 'Building Payment Service Image...'
+                sh 'docker build -t payment-service:latest ./payment-service'
+
                 // tagging
                 sh "docker tag user-service:latest ${DOCKER_REGISTRY}/user-service:${IMAGE_TAG}"
                 sh "docker tag order-service:latest ${DOCKER_REGISTRY}/order-service:${IMAGE_TAG}"
-                sh "docker tag payment-service:latest ${DOCKER_REGISTRY}/payment-service:${IMAGE_TAG}"
                 sh "docker tag tracking-service:latest ${DOCKER_REGISTRY}/tracking-service:${IMAGE_TAG}"
                 sh "docker tag gudang-service:latest ${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
                 sh "docker tag courier-service:latest ${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
                 sh "docker tag report-service:latest ${DOCKER_REGISTRY}/report-service:${IMAGE_TAG}"
+                sh "docker tag payment-service:latest ${DOCKER_REGISTRY}/payment-service:${IMAGE_TAG}"
 
               // tagging latest
               sh "docker tag user-service:latest ${DOCKER_REGISTRY}/user-service:latest"
               sh "docker tag order-service:latest ${DOCKER_REGISTRY}/order-service:latest"
-              sh "docker tag payment-service:latest ${DOCKER_REGISTRY}/payment-service:latest"
               sh "docker tag tracking-service:latest ${DOCKER_REGISTRY}/tracking-service:latest"
               sh "docker tag gudang-service:latest ${DOCKER_REGISTRY}/gudang-service:latest"
               sh "docker tag courier-service:latest ${DOCKER_REGISTRY}/courier-service:latest"
               sh "docker tag report-service:latest ${DOCKER_REGISTRY}/report-service:latest"
+              sh "docker tag payment-service:latest ${DOCKER_REGISTRY}/payment-service:latest"
             }
         }
 
         stage('5. Functional Tests') {
             steps {
         
-                sh 'docker compose up -d'
+                sh 'docker-compose up -d --build'
         
-                sleep time: 90, unit: 'SECONDS'
+                sleep time: 40, unit: 'SECONDS'
         
                 echo 'Running User Functional Tests...'
                 dir('user-service') {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=admin \
-                    DB_PASSWORD=admin123 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -160,32 +153,20 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=admin \
-                    DB_PASSWORD=admin123 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
                 }
         
-                echo 'Running Payment Functional Tests...'
-                dir('payment-service') {
-                    sh '''
-                    DB_HOST=host.docker.internal \
-                    DB_PORT=3306 \
-                    DB_USER=admin \
-                    DB_PASSWORD=admin123 \
-                    DB_NAME=tubesdb \
-                    go test -tags=functional -v -run Functional ./...
-                    '''
-                }
-
                 echo 'Running Tracking Functional Tests...'
                 dir('tracking-service') {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=admin \
-                    DB_PASSWORD=admin123 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -196,8 +177,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=admin \
-                    DB_PASSWORD=admin123 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -208,8 +189,8 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=admin \
-                    DB_PASSWORD=admin123 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -220,8 +201,20 @@ pipeline {
                     sh '''
                     DB_HOST=host.docker.internal \
                     DB_PORT=3306 \
-                    DB_USER=admin \
-                    DB_PASSWORD=admin123 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
+                    DB_NAME=tubesdb \
+                    go test -tags=functional -v -run Functional ./...
+                    '''
+                }
+
+                echo 'Running Payment Functional Tests...'
+                dir('payment-service') {
+                    sh '''
+                    DB_HOST=host.docker.internal \
+                    DB_PORT=3306 \
+                    DB_USER=root \
+                    DB_PASSWORD=root \
                     DB_NAME=tubesdb \
                     go test -tags=functional -v -run Functional ./...
                     '''
@@ -230,7 +223,7 @@ pipeline {
         
             post {
                 always {
-                    sh 'docker compose down'
+                    sh 'docker-compose down'
                 }
             }
         }
@@ -239,19 +232,19 @@ pipeline {
             steps {
                 sh "docker push ${DOCKER_REGISTRY}/user-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/order-service:${IMAGE_TAG}"
-                sh "docker push ${DOCKER_REGISTRY}/payment-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/tracking-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/gudang-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/courier-service:${IMAGE_TAG}"
                 sh "docker push ${DOCKER_REGISTRY}/report-service:${IMAGE_TAG}"
+                sh "docker push ${DOCKER_REGISTRY}/payment-service:${IMAGE_TAG}"
 
                 sh "docker push ${DOCKER_REGISTRY}/user-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/order-service:latest"
-                sh "docker push ${DOCKER_REGISTRY}/payment-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/tracking-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/gudang-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/courier-service:latest"
                 sh "docker push ${DOCKER_REGISTRY}/report-service:latest"
+                sh "docker push ${DOCKER_REGISTRY}/payment-service:latest"
             }
         }
 
@@ -259,19 +252,19 @@ pipeline {
             steps {
                 sh 'kubectl apply -f k8s/user-deployment.yaml'
                 sh 'kubectl apply -f k8s/order-deployment.yaml'
-                sh 'kubectl apply -f k8s/payment-deployment.yaml'
                 sh 'kubectl apply -f k8s/tracking-deployment.yaml'
                 sh 'kubectl apply -f k8s/gudang-deployment.yaml'
                 sh 'kubectl apply -f k8s/courier-deployment.yaml'
                 sh 'kubectl apply -f k8s/report-deployment.yaml'
+                sh 'kubectl apply -f k8s/payment-deployment.yaml'
 
                 sh 'kubectl apply -f k8s/user-service.yaml'
                 sh 'kubectl apply -f k8s/order-service.yaml'
-                sh 'kubectl apply -f k8s/payment-service.yaml'
                 sh 'kubectl apply -f k8s/tracking-service.yaml'
                 sh 'kubectl apply -f k8s/gudang-service.yaml'
                 sh 'kubectl apply -f k8s/courier-service.yaml'
                 sh 'kubectl apply -f k8s/report-service.yaml'
+                sh 'kubectl apply -f k8s/payment-service.yaml'
             }
         }
 
@@ -280,11 +273,11 @@ pipeline {
         
                 sh 'kubectl rollout restart deployment/user-service'
                 sh 'kubectl rollout restart deployment/order-service'
-                sh 'kubectl rollout restart deployment/payment-service'
                 sh 'kubectl rollout restart deployment/tracking-service'
                 sh 'kubectl rollout restart deployment/gudang-service'
                 sh 'kubectl rollout restart deployment/courier-service'
                 sh 'kubectl rollout restart deployment/report-service'
+                sh 'kubectl rollout restart deployment/payment-service'
         
                 sleep time: 20, unit: 'SECONDS'
         
@@ -293,11 +286,11 @@ pipeline {
         
                 sh 'kubectl rollout status deployment/user-service --timeout=300s'
                 sh 'kubectl rollout status deployment/order-service --timeout=300s'
-                sh 'kubectl rollout status deployment/payment-service --timeout=300s'
                 sh 'kubectl rollout status deployment/tracking-service --timeout=300s'
                 sh 'kubectl rollout status deployment/gudang-service --timeout=300s'
                 sh 'kubectl rollout status deployment/courier-service --timeout=300s'
                 sh 'kubectl rollout status deployment/report-service --timeout=300s'
+                sh 'kubectl rollout status deployment/payment-service --timeout=300s'
             }
         }
     }

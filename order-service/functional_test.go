@@ -14,8 +14,8 @@ import (
 
 // config
 const (
-	dbUser = "admin"
-	dbPass = "admin123"
+	dbUser = "root"
+	dbPass = "root"
 	dbHost = "host.docker.internal"
 	dbPort = "3306"
 	dbName = "tubesdb"

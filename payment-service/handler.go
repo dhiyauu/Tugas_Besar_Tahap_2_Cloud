@@ -5,34 +5,75 @@ import (
 	"net/http"
 )
 
-func createPaymentHandler(w http.ResponseWriter, r *http.Request) {
+var paymentValidator PaymentValidator = RealPaymentValidator{}
+var paymentRepo PaymentRepository
 
-	var req Payment
+func calculatePaymentHandler(w http.ResponseWriter, r *http.Request) {
 
-	json.NewDecoder(r.Body).Decode(&req)
+	var req CalculateRequest
 
-	repo := MySQLRepository{}
-
-	payment, err := CreatePayment(
-		req,
-		repo,
-	)
-
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(400)
-
-		json.NewEncoder(w).Encode(
-			map[string]string{
-				"error": err.Error(),
-			},
-		)
-
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid request",
+		})
 		return
 	}
 
-	json.NewEncoder(w).Encode(payment)
+	resp := CalculatePayment(req)
+
+	if resp == nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Failed to calculate payment",
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(resp)
 }
 
-func getPaymentHandler(w http.ResponseWriter, r *http.Request) {}
+func processPaymentHandler(w http.ResponseWriter, r *http.Request) {
 
-func updatePaymentHandler(w http.ResponseWriter, r *http.Request) {}
+	var req PaymentRequest
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": "Invalid request",
+		})
+		return
+	}
+
+	resp, err := ProcessPayment(
+		req,
+		paymentValidator,
+		paymentRepo,
+	)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
+
+func getTransactionHandler(w http.ResponseWriter, r *http.Request) {
+
+	id := r.URL.Query().Get("transaction_id")
+
+	resp := GetTransaction(id)
+
+	if resp == nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
